@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Calculator.net - Free Online Calculator - Math Help</title>
+
+  <link
+    rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='10' y='4' width='44' height='56' rx='4' fill='%23d0d0d0' stroke='%23777777' stroke-width='2'/%3E%3Crect x='16' y='10' width='32' height='12' rx='2' fill='%23eeeeee' stroke='%23999999'/%3E%3Cg fill='%23909090'%3E%3Crect x='16' y='28' width='7' height='7' rx='1'/%3E%3Crect x='28' y='28' width='7' height='7' rx='1'/%3E%3Crect x='40' y='28' width='7' height='7' rx='1'/%3E%3Crect x='16' y='39' width='7' height='7' rx='1'/%3E%3Crect x='28' y='39' width='7' height='7' rx='1'/%3E%3Crect x='40' y='39' width='7' height='7' rx='1'/%3E%3Crect x='16' y='50' width='7' height='7' rx='1'/%3E%3Crect x='28' y='50' width='7' height='7' rx='1'/%3E%3Crect x='40' y='50' width='7' height='7' rx='1'/%3E%3C/g%3E%3C/svg%3E"
+  >
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f4f4f4;
+      color: #222;
+    }
+
+    /* ============================================================
+       TOP NAVIGATION
+       ============================================================ */
+
+    .top-nav {
+      width: 100%;
+      background: #fff;
+      border-bottom: 1px solid #ccc;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .top-nav-inner {
+      max-width: 1100px;
+      min-height: 64px;
+      margin: 0 auto;
+      padding: 0 25px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .nav-links a {
+      color: #444;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .nav-links a:hover {
+      color: #1769aa;
+    }
+
+    .nav-logo {
+      color: #222;
+      text-decoration: none;
+      font-size: 24px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* ============================================================
+       PAGE HEADER
+       ============================================================ */
+
+    .header {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 35px 25px 20px;
+    }
+
+    .logo {
+      font-size: 42px;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #777;
+    }
+
+    .line {
+      height: 1px;
+      background: #ccc;
+      margin-top: 20px;
+    }
+
+    /* ============================================================
+       CALCULATOR
+       ============================================================ */
+
+    .calculator-area {
+      display: flex;
+      justify-content: center;
+      padding: 35px 20px 60px;
+    }
+
+    .calculator {
+      width: 560px;
+      max-width: 100%;
+
+      background: #ddd;
+      border: 1px solid #bbb;
+      border-radius: 6px;
+
+      padding: 18px;
+
+      box-shadow:
+        0 3px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .display {
+      width: 100%;
+      height: 85px;
+
+      background: #fff;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+
+      margin-bottom: 15px;
+
+      padding: 10px 15px;
+
+      text-align: right;
+      font-size: 38px;
+      color: #222;
+
+      outline: none;
+    }
+
+    .scientific {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+    }
+
+    button {
+      height: 48px;
+
+      border: 1px solid #aaa;
+      border-radius: 4px;
+
+      background: #f8f8f8;
+      color: #222;
+
+      font-size: 17px;
+
+      cursor: pointer;
+
+      transition:
+        background 0.1s,
+        transform 0.05s;
+    }
+
+    button:hover {
+      background: #e8e8e8;
+    }
+
+    button:active {
+      background: #d8d8d8;
+      transform: scale(0.98);
+    }
+
+    .function {
+      background: #eee;
+      font-size: 15px;
+    }
+
+    .operator {
+      background: #f0f0f0;
+      font-weight: bold;
+    }
+
+    .equals {
+      background: #d6e4f0;
+      font-weight: bold;
+    }
+
+    .clear {
+      background: #f0dcdc;
+      font-weight: bold;
+    }
+
+    .wide {
+      grid-column: span 2;
+    }
+
+    /* ============================================================
+       INFORMATION
+       ============================================================ */
+
+    .info {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 25px 60px;
+
+      color: #555;
+      line-height: 1.7;
+    }
+
+    .info h2 {
+      color: #333;
+      font-size: 28px;
+      margin-top: 45px;
+      margin-bottom: 15px;
+    }
+
+    .info h3 {
+      color: #333;
+      font-size: 21px;
+      margin-top: 30px;
+      margin-bottom: 10px;
+    }
+
+    .info p {
+      font-size: 16px;
+      margin: 0 0 18px;
+    }
+
+    .info ul {
+      padding-left: 25px;
+    }
+
+    .info li {
+      margin-bottom: 8px;
+    }
+
+    .feature {
+      margin-bottom: 22px;
+    }
+
+    .feature strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    /* ============================================================
+       PAGE LOADER
+       ============================================================ */
+
+    #page-loader {
+      position: fixed;
+      inset: 0;
+
+      background: #f4f4f4;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      z-index: 99999;
+    }
+
+    #page-loader.show {
+      display: flex;
+    }
+
+    .loader-box {
+      text-align: center;
+      color: #555;
+    }
+
+    .loader-spinner {
+      width: 38px;
+      height: 38px;
+
+      border: 4px solid #ddd;
+      border-top-color: #1769aa;
+      border-radius: 50%;
+
+      animation: spin 0.8s linear infinite;
+
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ============================================================
+       URL HOP BLOCKER
+       ============================================================ */
+
+    #url-hop-blocker {
+      position: fixed;
+      inset: 0;
+
+      z-index: 999999;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      padding: 30px;
+
+      background: #f4f4f4;
+    }
+
+    #url-hop-blocker.show {
+      display: flex;
+    }
+
+    .url-hop-box {
+      width: 100%;
+      max-width: 600px;
+
+      background: #fff;
+
+      border: 1px solid #ccc;
+      border-radius: 8px;
+
+      padding: 35px;
+
+      text-align: center;
+
+      box-shadow:
+        0 3px 12px rgba(0,0,0,.12);
+    }
+
+    .url-hop-box h1 {
+      margin-top: 0;
+      color: #333;
+      font-size: 28px;
+    }
+
+    .url-hop-box p {
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .url-hop-box button {
+      height: auto;
+
+      padding: 12px 25px;
+      margin-top: 15px;
+
+      background: #f5f5f5;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+
+    @media (max-width: 700px) {
+
+      .scientific {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+    }
+
+    @media (max-width: 600px) {
+
+      .top-nav-inner {
+        padding: 0 15px;
+      }
+
+      .nav-links {
+        gap: 14px;
+      }
+
+      .nav-links a {
+        font-size: 13px;
+      }
+
+      .nav-logo {
+        font-size: 20px;
+      }
+
+      .logo {
+        font-size: 34px;
+      }
+
+      button {
+        height: 44px;
+        font-size: 14px;
+      }
+
+      .display {
+        font-size: 30px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <!-- ============================================================
+       URL HOP BLOCKER
+       ============================================================ -->
+
+  <div id="url-hop-blocker">
+
+    <div class="url-hop-box">
+
+      <h1>
+        Calculator.net forbids URL hopping
+      </h1>
+
+      <p>
+        You must unlock this page through Calculator.net
+        before accessing it directly.
+      </p>
+
+      <button onclick="goBackToCalculator()">
+        Go Back
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       PAGE LOADER
+       ============================================================ -->
+
+  <div id="page-loader">
+
+    <div class="loader-box">
+
+      <div class="loader-spinner"></div>
+
+      <div>
+        Loading page...
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       NAVIGATION
+       ============================================================ -->
+
+  <header class="top-nav">
+
+    <div class="top-nav-inner">
+
+      <nav class="nav-links">
+
+        <a href="algebra.html">
+          Algebra
+        </a>
+
+        <a href="calculators.html">
+          Calculators
+        </a>
+
+        <a href="math-tools.html">
+          Math Tools
+        </a>
+
+      </nav>
+
+      <a
+        class="nav-logo"
+        href="index.html"
+      >
+        Calculator.net
+      </a>
+
+    </div>
+
+  </header>
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+
+  <header class="header">
+
+    <div class="logo">
+      Calculator.net
+    </div>
+
+    <div class="subtitle">
+      Online calculator for quick and easy calculations.
+    </div>
+
+    <div class="line"></div>
+
+  </header>
+
+  <!-- ============================================================
+       CALCULATOR
+       ============================================================ -->
+
+  <main class="calculator-area">
+
+    <div class="calculator">
+
+      <input
+        id="display"
+        class="display"
+        type="text"
+        readonly
+        value=""
+        aria-label="Calculator display"
+      >
+
+      <div class="scientific">
+
+        <button
+          class="function"
+          onclick="addFunction('sin')"
+        >
+          sin
+        </button>
+
+        <button
+          class="function"
+          onclick="addFunction('cos')"
+        >
+          cos
+        </button>
+
+        <button
+          class="function"
+          onclick="addFunction('tan')"
+        >
+          tan
+        </button>
+
+        <button
+          class="function"
+          onclick="addFunction('sqrt')"
+        >
+          √
+        </button>
+
+        <button
+          class="function"
+          onclick="addFunction('log')"
+        >
+          log
+        </button>
+
+        <button
+          class="function"
+          onclick="addFunction('ln')"
+        >
+          ln
+        </button>
+
+      </div>
+
+      <div class="main">
+
+        <button
+          class="clear"
+          onclick="clearDisplay()"
+        >
+          AC
+        </button>
+
+        <button onclick="backspace()">
+          DEL
+        </button>
+
+        <button onclick="add('(')">
+          (
+        </button>
+
+        <button onclick="add(')')">
+          )
+        </button>
+
+        <button
+          class="operator"
+          onclick="add('/')"
+        >
+          ÷
+        </button>
+
+        <button onclick="add('7')">
+          7
+        </button>
+
+        <button onclick="add('8')">
+          8
+        </button>
+
+        <button onclick="add('9')">
+          9
+        </button>
+
+        <button
+          class="operator"
+          onclick="add('*')"
+        >
+          ×
+        </button>
+
+        <button onclick="add('%')">
+          %
+        </button>
+
+        <button onclick="add('4')">
+          4
+        </button>
+
+        <button onclick="add('5')">
+          5
+        </button>
+
+        <button onclick="add('6')">
+          6
+        </button>
+
+        <button
+          class="operator"
+          onclick="add('-')"
+        >
+          −
+        </button>
+
+        <button onclick="add('.')">
+          .
+        </button>
+
+        <button onclick="add('1')">
+          1
+        </button>
+
+        <button onclick="add('2')">
+          2
+        </button>
+
+        <button onclick="add('3')">
+          3
+        </button>
+
+        <button
+          class="operator"
+          onclick="add('+')"
+        >
+          +
+        </button>
+
+        <button
+          class="equals"
+          onclick="calculate()"
+        >
+          =
+        </button>
+
+        <button
+          class="wide"
+          onclick="add('0')"
+        >
+          0
+        </button>
+
+        <button onclick="add('00')">
+          00
+        </button>
+
+        <button onclick="add('Math.PI')">
+          π
+        </button>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ============================================================
+       INFORMATION
+       ============================================================ -->
+
+  <section class="info">
+
+    <h2>
+      Why Choose Calculator.net?
+    </h2>
+
+    <div class="feature">
+
+      <strong>
+        Advanced Functions
+      </strong>
+
+      Trigonometric, logarithmic, exponential,
+      and mathematical calculations at your fingertips.
+
+    </div>
+
+    <div class="feature">
+
+      <strong>
+        Lightning Fast
+      </strong>
+
+      Instant calculations directly in your browser.
+
+    </div>
+
+    <div class="feature">
+
+      <strong>
+        Educational
+      </strong>
+
+      Perfect for students learning mathematics,
+      algebra, and scientific calculations.
+
+    </div>
+
+    <h2>
+      How to Use the Scientific Calculator
+    </h2>
+
+    <p>
+      This online calculator provides functions for everyday
+      mathematics including arithmetic, trigonometry,
+      logarithms, square roots, and powers.
+    </p>
+
+    <h3>
+      Available Functions
+    </h3>
+
+    <ul>
+
+      <li>
+        <strong>Trigonometric:</strong>
+        sin, cos, and tan.
+      </li>
+
+      <li>
+        <strong>Logarithmic:</strong>
+        log and ln.
+      </li>
+
+      <li>
+        <strong>Powers:</strong>
+        square roots and powers.
+      </li>
+
+      <li>
+        <strong>Constants:</strong>
+        π and e.
+      </li>
+
+    </ul>
+
+    <h2>
+      When Should You Use a Calculator?
+    </h2>
+
+    <p>
+      A calculator is useful whenever you need quick
+      and accurate mathematical results for arithmetic,
+      percentages, decimals, and scientific calculations.
+    </p>
+
+    <h2>
+      Why Use an Online Calculator?
+    </h2>
+
+    <p>
+      Online calculators provide convenient access from
+      computers, tablets, and phones without requiring
+      a separate application.
+    </p>
+
+  </section>
+
+
+  <script>
+
+    "use strict";
+
+    let display = null;
+    let secretTimer = null;
+    let isLoadingPage = false;
+
+
+    /* ============================================================
+       URL HOP PROTECTION
+       ============================================================ */
+
+    function goBackToCalculator() {
+
+      sessionStorage.removeItem(
+        "currentLoadedPage"
+      );
+
+      window.location.replace(
+        "index.html"
+      );
+
+    }
+
+
+    function blockURLHop() {
+
+      const blocker =
+        document.getElementById(
+          "url-hop-blocker"
+        );
+
+      if (blocker) {
+
+        blocker.classList.add(
+          "show"
+        );
+
+      }
+
+      document.body.style.overflow =
+        "hidden";
+
+    }
+
+
+    function checkURLHop() {
+
+      const fileName =
+        window.location.pathname
+          .split("/")
+          .pop()
+          .toLowerCase();
+
+      /*
+        index.html is always allowed.
+      */
+
+      if (
+        fileName === "" ||
+        fileName === "index.html"
+      ) {
+
+        return false;
+
+      }
+
+      const unlocked =
+        sessionStorage.getItem(
+          "secretPageUnlocked"
+        ) === "true";
+
+      const secretPage =
+        sessionStorage.getItem(
+          "secretPage"
+        );
+
+      /*
+        User typed a protected URL directly.
+      */
+
+      if (
+        !unlocked ||
+        !secretPage
+      ) {
+
+        blockURLHop();
+
+        return true;
+
+      }
+
+      /*
+        Only allow the unlocked secret page.
+      */
+
+      if (
+        fileName !==
+        secretPage.toLowerCase()
+      ) {
+
+        blockURLHop();
+
+        return true;
+
+      }
+
+      return false;
+
+    }
+
+
+    /* ============================================================
+       CALCULATOR
+       ============================================================ */
+
+    function setupCalculator() {
+
+      display =
+        document.getElementById(
+          "display"
+        );
+
+      if (!display) {
+        return;
+      }
+
+      if (
+        window.__keyboardHandler
+      ) {
+
+        document.removeEventListener(
+          "keydown",
+          window.__keyboardHandler
+        );
+
+      }
+
+      window.__keyboardHandler =
+        function(event) {
+
+          const allowedKeys =
+            "0123456789+-*/().%";
+
+          if (
+            allowedKeys.includes(
+              event.key
+            )
+          ) {
+
+            event.preventDefault();
+
+            add(event.key);
+
+            return;
+
+          }
+
+          if (
+            event.key === "Enter"
+          ) {
+
+            event.preventDefault();
+
+            calculate();
+
+          }
+
+          if (
+            event.key === "Backspace"
+          ) {
+
+            event.preventDefault();
+
+            backspace();
+
+          }
+
+          if (
+            event.key === "Escape"
+          ) {
+
+            event.preventDefault();
+
+            clearDisplay();
+
+          }
+
+        };
+
+      document.addEventListener(
+        "keydown",
+        window.__keyboardHandler
+      );
+
+    }
+
+
+    function add(value) {
+
+      if (!display) {
+        return;
+      }
+
+      if (
+        display.value === "Error"
+      ) {
+
+        display.value = "";
+
+      }
+
+      display.value += value;
+
+      checkSecret();
+
+    }
+
+
+    function addFunction(type) {
+
+      if (!display) {
+        return;
+      }
+
+      switch (type) {
+
+        case "sin":
+          display.value += "sin(";
+          break;
+
+        case "cos":
+          display.value += "cos(";
+          break;
+
+        case "tan":
+          display.value += "tan(";
+          break;
+
+        case "sqrt":
+          display.value += "sqrt(";
+          break;
+
+        case "log":
+          display.value += "log(";
+          break;
+
+        case "ln":
+          display.value += "ln(";
+          break;
+
+      }
+
+      checkSecret();
+
+    }
+
+
+    function clearDisplay() {
+
+      if (!display) {
+        return;
+      }
+
+      display.value = "";
+
+      clearTimeout(secretTimer);
+
+    }
+
+
+    function backspace() {
+
+      if (!display) {
+        return;
+      }
+
+      display.value =
+        display.value.slice(
+          0,
+          -1
+        );
+
+      checkSecret();
+
+    }
+
+
+    function calculate() {
+
+      if (!display) {
+        return;
+      }
+
+      let expression =
+        display.value;
+
+      if (!expression) {
+        return;
+      }
+
+      expression =
+        expression
+          .replace(
+            /sin\(/g,
+            "sin("
+          )
+          .replace(
+            /cos\(/g,
+            "cos("
+          )
+          .replace(
+            /tan\(/g,
+            "tan("
+          )
+          .replace(
+            /sqrt\(/g,
+            "sqrt("
+          )
+          .replace(
+            /log\(/g,
+            "log("
+          )
+          .replace(
+            /ln\(/g,
+            "ln("
+          );
+
+      try {
+
+        const sin =
+          value =>
+            Math.sin(
+              Number(value) *
+              Math.PI /
+              180
+            );
+
+        const cos =
+          value =>
+            Math.cos(
+              Number(value) *
+              Math.PI /
+              180
+            );
+
+        const tan =
+          value =>
+            Math.tan(
+              Number(value) *
+              Math.PI /
+              180
+            );
+
+        const sqrt =
+          Math.sqrt;
+
+        const log =
+          Math.log10;
+
+        const ln =
+          Math.log;
+
+        const result =
+          Function(
+            "sin",
+            "cos",
+            "tan",
+            "sqrt",
+            "log",
+            "ln",
+            '"use strict"; return (' +
+            expression +
+            ")"
+          )(
+            sin,
+            cos,
+            tan,
+            sqrt,
+            log,
+            ln
+          );
+
+        if (
+          typeof result !== "number" ||
+          !Number.isFinite(result)
+        ) {
+
+          display.value = "Error";
+
+          return;
+
+        }
+
+        display.value =
+          Number(
+            result.toPrecision(12)
+          );
+
+      }
+
+      catch (error) {
+
+        display.value = "Error";
+
+      }
+
+    }
+
+
+    /* ============================================================
+       SECRET CODE
+       676767
+       ============================================================ */
+
+    function checkSecret() {
+
+      clearTimeout(secretTimer);
+
+      if (!display) {
+        return;
+      }
+
+      const secret =
+        String.fromCharCode(
+          54,
+          55,
+          54,
+          55,
+          54,
+          55
+        );
+
+      if (
+        display.value === secret
+      ) {
+
+        secretTimer =
+          setTimeout(
+            function() {
+
+              /*
+                Unlock the secret page.
+              */
+
+              sessionStorage.setItem(
+                "secretPageUnlocked",
+                "true"
+              );
+
+              sessionStorage.setItem(
+                "secretPage",
+                "home.html"
+              );
+
+              loadPage(
+                "home.html"
+              );
+
+            },
+            2000
+          );
+
+      }
+
+    }
+
+
+    /* ============================================================
+       PAGE LOADER
+       ============================================================ */
+
+    async function loadPage(url) {
+
+      if (isLoadingPage) {
+        return;
+      }
+
+      isLoadingPage = true;
+
+      const loader =
+        document.getElementById(
+          "page-loader"
+        );
+
+      if (loader) {
+
+        loader.classList.add(
+          "show"
+        );
+
+      }
+
+      try {
+
+        const targetURL =
+          new URL(
+            url,
+            window.location.href
+          );
+
+        if (
+          targetURL.origin !==
+          window.location.origin
+        ) {
+
+          throw new Error(
+            "Cross-origin pages are not allowed."
+          );
+
+        }
+
+        const response =
+          await fetch(
+            targetURL.href,
+            {
+              cache: "no-store"
+            }
+          );
+
+        if (!response.ok) {
+
+          throw new Error(
+            "Page could not be loaded."
+          );
+
+        }
+
+        const html =
+          await response.text();
+
+        const parser =
+          new DOMParser();
+
+        const newDocument =
+          parser.parseFromString(
+            html,
+            "text/html"
+          );
+
+        const scripts =
+          Array.from(
+            newDocument.querySelectorAll(
+              "script"
+            )
+          );
+
+        scripts.forEach(
+          script => script.remove()
+        );
+
+        const base =
+          newDocument.createElement(
+            "base"
+          );
+
+        base.href =
+          targetURL.href;
+
+        newDocument.head.insertBefore(
+          base,
+          newDocument.head.firstChild
+        );
+
+        document.documentElement.replaceWith(
+          newDocument.documentElement
+        );
+
+        sessionStorage.setItem(
+          "currentLoadedPage",
+          targetURL.pathname
+            .split("/")
+            .pop() ||
+          "index.html"
+        );
+
+        for (
+          const oldScript
+          of scripts
+        ) {
+
+          const newScript =
+            document.createElement(
+              "script"
+            );
+
+          if (
+            oldScript.src
+          ) {
+
+            newScript.src =
+              oldScript.src;
+
+          }
+
+          else {
+
+            newScript.textContent =
+              oldScript.textContent;
+
+          }
+
+          document.body.appendChild(
+            newScript
+          );
+
+        }
+
+      }
+
+      catch (error) {
+
+        console.error(
+          error
+        );
+
+        document.body.innerHTML = `
+          <div style="
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-family:Arial;
+            padding:30px;
+          ">
+            <div style="
+              background:white;
+              padding:30px;
+              border:1px solid #ccc;
+              border-radius:8px;
+              text-align:center;
+            ">
+              <h2>
+                Unable to load page
+              </h2>
+
+              <p>
+                ${error.message}
+              </p>
+
+              <button
+                onclick="
+                  location.href='index.html'
+                "
+              >
+                Go Back
+              </button>
+            </div>
+          </div>
+        `;
+
+      }
+
+      finally {
+
+        isLoadingPage = false;
+
+      }
+
+    }
+
+
+    /* ============================================================
+       NAVIGATION
+       ============================================================ */
+
+    function installNavigation() {
+
+      document.addEventListener(
+        "click",
+        function(event) {
+
+          const link =
+            event.target.closest(
+              "a"
+            );
+
+          if (!link) {
+            return;
+          }
+
+          const href =
+            link.getAttribute(
+              "href"
+            );
+
+          if (!href) {
+            return;
+          }
+
+          if (
+            href.startsWith("#") ||
+            href.startsWith("http")
+          ) {
+
+            return;
+
+          }
+
+          event.preventDefault();
+
+          loadPage(
+            href
+          );
+
+        }
+      );
+
+    }
+
+
+    /* ============================================================
+       INITIALIZATION
+       ============================================================ */
+
+    const isBlocked =
+      checkURLHop();
+
+    /*
+      Don't activate the calculator or
+      navigation behind the blocker.
+    */
+
+    if (!isBlocked) {
+
+      if (
+        !sessionStorage.getItem(
+          "currentLoadedPage"
+        )
+      ) {
+
+        sessionStorage.setItem(
+          "currentLoadedPage",
+          "index.html"
+        );
+
+      }
+
+      installNavigation();
+
+      setupCalculator();
+
+    }
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,2530 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Clever</title>
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="https://th.bing.com/th/id/ODF.cCsv-cCt-jkEcwiJYMYj4A?w=32&h=32&qlt=90&pcl=fffffc&o=6&pid=1.2"
+    >
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&family=Lexend:wght@100..900&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        /* =====================================================
+           ROOT
+        ===================================================== */
+
+        :root {
+            --accent1: #9b59b6;
+            --accent2: #c084fc;
+
+            --theme-bg1: #000000;
+            --theme-bg2: #b700ff;
+
+            --navbar-bg: rgba(20, 20, 20, 0.7);
+            --navbar-border: rgba(255, 255, 255, 0.1);
+        }
+
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family: "Grandstander", cursive;
+
+            color: white;
+
+            overflow-x: hidden;
+
+            background: transparent;
+        }
+
+
+        /* =====================================================
+           BACKGROUND
+        ===================================================== */
+
+        #bg {
+            position: fixed;
+
+            inset: 0;
+
+            z-index: -10;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--theme-bg1),
+                    var(--theme-bg2)
+                );
+        }
+
+        #bg::after {
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background: rgba(0, 0, 0, 0.22);
+
+            pointer-events: none;
+
+            z-index: 2;
+        }
+
+        .background-video {
+            position: absolute;
+
+            inset: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+            pointer-events: none;
+
+            z-index: 1;
+        }
+
+
+        /* =====================================================
+           FIREFLIES
+        ===================================================== */
+
+        .firefly {
+            position: fixed;
+
+            border-radius: 50%;
+
+            pointer-events: none;
+
+            opacity: 0;
+
+            filter: blur(0.3px);
+
+            will-change: transform;
+
+            animation-fill-mode: both;
+
+            z-index: -5;
+        }
+
+        .firefly::after {
+            content: "";
+
+            position: absolute;
+
+            inset: -3px;
+
+            border-radius: 50%;
+
+            background: inherit;
+
+            opacity: 0.25;
+
+            filter: blur(5px);
+        }
+
+        @keyframes fireflyMove {
+
+            0% {
+                transform:
+                    translate(0px, 0px)
+                    scale(0.8);
+
+                opacity: 0;
+            }
+
+            15% {
+                transform:
+                    translate(25px, -18px)
+                    scale(1);
+
+                opacity: 0.6;
+            }
+
+            35% {
+                transform:
+                    translate(60px, -40px)
+                    scale(0.9);
+
+                opacity: 0.85;
+            }
+
+            55% {
+                transform:
+                    translate(95px, -70px)
+                    scale(1.05);
+
+                opacity: 0.55;
+            }
+
+            75% {
+                transform:
+                    translate(130px, -105px)
+                    scale(0.95);
+
+                opacity: 0.75;
+            }
+
+            100% {
+                transform:
+                    translate(170px, -145px)
+                    scale(0.7);
+
+                opacity: 0;
+            }
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .navbar {
+            position: fixed;
+
+            bottom: 15px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 8px 12px;
+
+            border-radius: 18px;
+
+            background: var(--navbar-bg);
+
+            backdrop-filter: blur(12px);
+
+            border:
+                1px solid
+                var(--navbar-border);
+
+            box-shadow:
+                0 0 25px
+                color-mix(
+                    in srgb,
+                    var(--accent1) 65%,
+                    transparent
+                );
+
+            z-index: 9999;
+        }
+
+        .nav-btn {
+            width: 40px;
+
+            height: 32px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border: none;
+
+            background: transparent;
+
+            color: white;
+
+            cursor: pointer;
+
+            border-radius: 10px;
+
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background:
+                rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn.active {
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--accent1),
+                    var(--accent2)
+                );
+
+            box-shadow:
+                0 0 12px
+                var(--accent1);
+        }
+
+        .nav-btn svg {
+            width: 19px;
+
+            height: 19px;
+
+            stroke: currentColor;
+
+            fill: none;
+
+            stroke-width: 1.8;
+
+            stroke-linecap: round;
+
+            stroke-linejoin: round;
+
+            opacity: 0.9;
+        }
+
+
+        /* =====================================================
+           TITLE
+        ===================================================== */
+
+        .title {
+            text-align: center;
+
+            margin:
+                80px 15px 0;
+
+            font-size:
+                clamp(32px, 5vw, 52px);
+
+            text-shadow:
+                0 0 20px
+                color-mix(
+                    in srgb,
+                    var(--accent1) 50%,
+                    transparent
+                );
+        }
+
+        .subtext {
+            text-align: center;
+
+            opacity: 0.7;
+
+            margin-top: 12px;
+
+            padding: 0 15px;
+
+            font-family: "Lexend", sans-serif;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           SEARCH
+        ===================================================== */
+
+        .searchgames {
+            display: block;
+
+            margin:
+                35px auto 20px;
+
+            width: 400px;
+
+            max-width:
+                calc(100% - 30px);
+
+            height: 44px;
+
+            padding:
+                0 20px;
+
+            border-radius: 22px;
+
+            border:
+                2px solid
+                var(--accent1);
+
+            background:
+                rgba(255, 255, 255, 0.05);
+
+            backdrop-filter:
+                blur(10px);
+
+            color: white;
+
+            text-align: center;
+
+            font-family:
+                "Grandstander",
+                cursive;
+
+            font-size: 14px;
+
+            outline: none;
+
+            transition:
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .searchgames::placeholder {
+            color:
+                rgba(255, 255, 255, 0.55);
+        }
+
+        .searchgames:focus,
+        .searchgames:hover {
+            box-shadow:
+                0 0 15px
+                var(--accent1);
+
+            background:
+                rgba(255, 255, 255, 0.1);
+        }
+
+
+        /* =====================================================
+           SECTIONS
+        ===================================================== */
+
+        .section {
+            max-width: 1250px;
+
+            margin: 0 auto 25px;
+
+            padding: 0 20px;
+        }
+
+        .section-title {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin:
+                30px 0 15px;
+
+            font-size: 24px;
+
+            font-weight: 700;
+
+            text-shadow:
+                0 0 15px
+                color-mix(
+                    in srgb,
+                    var(--accent1) 50%,
+                    transparent
+                );
+        }
+
+        .section-title span {
+            font-size: 22px;
+        }
+
+        .section-line {
+            flex: 1;
+
+            height: 2px;
+
+            border-radius: 5px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--accent1),
+                    transparent
+                );
+
+            opacity: 0.7;
+        }
+
+
+        /* =====================================================
+           GAME GRID
+        ===================================================== */
+
+        .game-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fill,
+                    minmax(150px, 1fr)
+                );
+
+            gap: 15px;
+
+            margin-bottom: 30px;
+        }
+
+        .popular-grid {
+            grid-template-columns:
+                repeat(
+                    auto-fill,
+                    minmax(150px, 1fr)
+                );
+        }
+
+
+        /* =====================================================
+           GAME CARD
+        ===================================================== */
+
+        .game {
+            width: 100%;
+
+            aspect-ratio: 1 / 1;
+
+            border: none;
+
+            border-radius: 15px;
+
+            background:
+                rgba(255, 255, 255, 0.1);
+
+            cursor: pointer;
+
+            overflow: hidden;
+
+            position: relative;
+
+            padding: 0;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+
+            color: white;
+
+            font-family:
+                "Grandstander",
+                cursive;
+
+            isolation: isolate;
+        }
+
+        .game:hover {
+            transform:
+                scale(1.06);
+
+            box-shadow:
+                0 0 25px
+                color-mix(
+                    in srgb,
+                    var(--accent1) 70%,
+                    transparent
+                );
+
+            z-index: 5;
+        }
+
+        .game:focus-visible {
+            outline:
+                3px solid
+                var(--accent2);
+
+            outline-offset: 3px;
+        }
+
+
+        /* =====================================================
+           GAME IMAGE
+        ===================================================== */
+
+        .game-wallpaper {
+            position: absolute;
+
+            inset: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+            z-index: 2;
+
+            transition:
+                transform 0.25s ease,
+                filter 0.25s ease;
+        }
+
+        .game:hover .game-wallpaper {
+            transform:
+                scale(1.08);
+
+            filter:
+                brightness(0.65);
+        }
+
+
+        /* =====================================================
+           DEFAULT WALLPAPER
+        ===================================================== */
+
+        .default-wallpaper {
+            position: absolute;
+
+            inset: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 45px;
+
+            z-index: 1;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--accent1),
+                    var(--accent2)
+                );
+        }
+
+
+        /* =====================================================
+           GAME TITLE
+        ===================================================== */
+
+        .game-title-shade {
+            position: absolute;
+
+            left: 0;
+
+            right: 0;
+
+            bottom: 0;
+
+            height: 55%;
+
+            z-index: 3;
+
+            background:
+                linear-gradient(
+                    to bottom,
+                    transparent,
+                    rgba(0, 0, 0, 0.92)
+                );
+
+            pointer-events: none;
+        }
+
+        .game-title {
+            position: absolute;
+
+            left: 5px;
+
+            right: 5px;
+
+            bottom: 12px;
+
+            z-index: 4;
+
+            text-align: center;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            color: white;
+
+            text-shadow:
+                0 2px 5px black;
+
+            opacity: 0;
+
+            transform:
+                translateY(8px);
+
+            transition:
+                opacity 0.2s ease,
+                transform 0.2s ease;
+
+            pointer-events: none;
+        }
+
+        .game:hover .game-title {
+            opacity: 1;
+
+            transform:
+                translateY(0);
+        }
+
+
+        /* =====================================================
+           POPULAR BADGE
+        ===================================================== */
+
+        .popular-badge {
+            position: absolute;
+
+            top: 8px;
+
+            left: 8px;
+
+            z-index: 5;
+
+            padding:
+                4px 8px;
+
+            border-radius: 20px;
+
+            font-family:
+                "Lexend",
+                sans-serif;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff6b35,
+                    #ffcc00
+                );
+
+            color: white;
+
+            box-shadow:
+                0 2px 10px
+                rgba(0, 0, 0, 0.4);
+        }
+
+
+        /* =====================================================
+           MESSAGE
+        ===================================================== */
+
+        .message {
+            text-align: center;
+
+            padding: 50px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(0, 0, 0, 0.2);
+
+            backdrop-filter:
+                blur(10px);
+
+            font-family:
+                "Lexend",
+                sans-serif;
+        }
+
+        .loading {
+            text-align: center;
+
+            padding: 60px;
+
+            font-size: 18px;
+
+            opacity: 0.8;
+
+            font-family:
+                "Lexend",
+                sans-serif;
+        }
+
+
+        /* =====================================================
+           GAME PLAYER
+        ===================================================== */
+
+        #gamePlayer {
+            position: fixed;
+
+            inset: 0;
+
+            display: none;
+
+            background: #000;
+
+            z-index: 999999;
+        }
+
+        #gamePlayer.active {
+            display: block;
+        }
+
+        #gameFrame {
+            position: absolute;
+
+            inset: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            border: none;
+
+            background: #000;
+        }
+
+        #closeGame {
+            position: fixed;
+
+            top: 18px;
+
+            right: 18px;
+
+            width: 45px;
+
+            height: 45px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background:
+                rgba(0, 0, 0, 0.7);
+
+            backdrop-filter:
+                blur(10px);
+
+            color: white;
+
+            font-size: 25px;
+
+            cursor: pointer;
+
+            z-index: 1000000;
+
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        #closeGame:hover {
+            background:
+                var(--accent1);
+
+            transform:
+                scale(1.1);
+        }
+
+
+        /* =====================================================
+           SCROLLBAR
+        ===================================================== */
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background:
+                rgba(0, 0, 0, 0.7);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background:
+                var(--accent1);
+
+            border-radius: 10px;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .title {
+                margin-top: 60px;
+            }
+
+            .section {
+                padding: 0 12px;
+            }
+
+            .game-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 12px;
+            }
+
+            .section-title {
+                font-size: 20px;
+            }
+
+            #closeGame {
+                top: 10px;
+                right: 10px;
+            }
+
+            .navbar {
+                gap: 5px;
+
+                padding:
+                    7px 8px;
+
+                max-width:
+                    calc(100vw - 20px);
+            }
+
+            .nav-btn {
+                width: 38px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+    <!-- BACKGROUND -->
+
+    <div id="bg"></div>
+
+
+    <!-- MAIN -->
+
+    <main id="launcher">
+
+        <h1 class="title">
+            G@mes
+        </h1>
+
+        <div
+            class="subtext"
+            id="gameCount"
+        >
+            Connecting to g@mes...
+        </div>
+
+        <div class="subtext">
+            Provided by Lumin SDK
+        </div>
+
+
+        <!-- SEARCH -->
+
+        <input
+            type="text"
+            id="searchBar"
+            class="searchgames"
+            placeholder="Search g@mes..."
+            autocomplete="off"
+        >
+
+
+        <!-- POPULAR SECTION -->
+
+        <section
+            class="section"
+            id="popularSection"
+        >
+
+            <div class="section-title">
+
+                <span></span>
+
+                Popular
+
+                <div class="section-line"></div>
+
+            </div>
+
+            <div
+                id="popularContainer"
+                class="game-grid popular-grid"
+            >
+
+                <div class="loading">
+                    Loading popular g@mes...
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ALL ACTIVITIES -->
+
+        <section
+            class="section"
+            id="allSection"
+        >
+
+            <div class="section-title">
+
+                <span></span>
+
+                All G@mes
+
+                <div class="section-line"></div>
+
+            </div>
+
+            <div
+                id="container"
+                class="game-grid"
+            >
+
+                <div class="loading">
+                    Loading g@mes...
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- NAVBAR -->
+
+    <nav
+        class="navbar"
+        id="navbar"
+        aria-label="Navigation"
+    >
+
+        
+
+    <!-- GAME PLAYER -->
+
+    <div id="gamePlayer">
+
+        <button
+            id="closeGame"
+            type="button"
+            title="Close game"
+        >
+            ×
+        </button>
+
+        <iframe
+            id="gameFrame"
+            allow="autoplay; fullscreen; pointer-lock; gamepad"
+            allowfullscreen
+        ></iframe>
+
+    </div>
+
+
+    <!-- THEME SYSTEM -->
+
+    <script>
+
+        const themes = {
+
+            default: {
+                accent1: "#9b59b6",
+                accent2: "#c084fc",
+                bg1: "#000000",
+                bg2: "#b700ff"
+            },
+
+            girly: {
+                accent1: "#ff69b4",
+                accent2: "#ffb6d9",
+                bg1: "#3a001f",
+                bg2: "#ff69b4"
+            },
+
+            hacker: {
+                accent1: "#00ff55",
+                accent2: "#00cc44",
+                bg1: "#000800",
+                bg2: "#003b15"
+            },
+
+            ocean: {
+                accent1: "#00aaff",
+                accent2: "#66ddff",
+                bg1: "#00101f",
+                bg2: "#0066aa"
+            },
+
+            forest: {
+                accent1: "#35c759",
+                accent2: "#8bdc8b",
+                bg1: "#031007",
+                bg2: "#176b2c"
+            },
+
+            sunset: {
+                accent1: "#ff512f",
+                accent2: "#dd2476",
+                bg1: "#200000",
+                bg2: "#ff512f"
+            },
+
+            purple: {
+                accent1: "#b026ff",
+                accent2: "#d580ff",
+                bg1: "#100020",
+                bg2: "#6a00a8"
+            },
+
+            cyber: {
+                accent1: "#ff00cc",
+                accent2: "#3333ff",
+                bg1: "#08000f",
+                bg2: "#330066"
+            },
+
+            red: {
+                accent1: "#ff2020",
+                accent2: "#ff6666",
+                bg1: "#120000",
+                bg2: "#8b0000"
+            },
+
+            midnight: {
+                accent1: "#4d6cff",
+                accent2: "#7289ff",
+                bg1: "#020024",
+                bg2: "#090979"
+            },
+
+            ice: {
+                accent1: "#66e6ff",
+                accent2: "#b8f5ff",
+                bg1: "#00151c",
+                bg2: "#006b7a"
+            },
+
+            gold: {
+                accent1: "#ffd700",
+                accent2: "#fff09a",
+                bg1: "#160e00",
+                bg2: "#806000"
+            },
+
+            cherry: {
+                accent1: "#ff1744",
+                accent2: "#ff6685",
+                bg1: "#180006",
+                bg2: "#8b001c"
+            },
+
+            lavender: {
+                accent1: "#c77dff",
+                accent2: "#e0aaff",
+                bg1: "#100818",
+                bg2: "#5a189a"
+            },
+
+            neon: {
+                accent1: "#00ffea",
+                accent2: "#ff00ff",
+                bg1: "#000b12",
+                bg2: "#260026"
+            },
+
+            coffee: {
+                accent1: "#d2691e",
+                accent2: "#f4a460",
+                bg1: "#100804",
+                bg2: "#5c2e0e"
+            },
+
+            emerald: {
+                accent1: "#00c878",
+                accent2: "#63ffb5",
+                bg1: "#00140e",
+                bg2: "#006b43"
+            }
+
+        };
+
+
+        /* NAVIGATION */
+
+        function goToPage(page) {
+            window.location.href = page;
+        }
+
+
+        /* THEME */
+
+        function getCurrentTheme() {
+
+            let themeName =
+                localStorage.getItem("selectedTheme");
+
+            if (!themeName || !themes[themeName]) {
+                themeName = "default";
+            }
+
+            return themes[themeName];
+        }
+
+
+        function applyTheme() {
+
+            const theme =
+                getCurrentTheme();
+
+            document.documentElement.style.setProperty(
+                "--accent1",
+                theme.accent1
+            );
+
+            document.documentElement.style.setProperty(
+                "--accent2",
+                theme.accent2
+            );
+
+            document.documentElement.style.setProperty(
+                "--theme-bg1",
+                theme.bg1
+            );
+
+            document.documentElement.style.setProperty(
+                "--theme-bg2",
+                theme.bg2
+            );
+
+            createFireflies(theme.accent2);
+        }
+
+
+        /* BACKGROUND */
+
+        function applyBackground() {
+
+            const bg =
+                document.getElementById("bg");
+
+            if (!bg) return;
+
+
+            const type =
+                localStorage.getItem("bgType");
+
+            const value =
+                localStorage.getItem("bgValue");
+
+
+            const theme =
+                getCurrentTheme();
+
+
+            const oldVideo =
+                bg.querySelector(".background-video");
+
+            if (oldVideo) {
+
+                oldVideo.pause();
+
+                oldVideo.remove();
+            }
+
+
+            bg.style.backgroundImage = "none";
+
+            bg.style.background = "transparent";
+
+
+            /* DEFAULT */
+
+            if (!type) {
+
+                bg.style.background =
+                    `linear-gradient(
+                        135deg,
+                        ${theme.bg1},
+                        ${theme.bg2}
+                    )`;
+
+                return;
+            }
+
+
+            /* NONE */
+
+            if (type === "none") {
+
+                bg.style.background =
+                    `linear-gradient(
+                        135deg,
+                        ${theme.bg1},
+                        ${theme.bg2}
+                    )`;
+
+                return;
+            }
+
+
+            /* COLOR */
+
+            if (type === "color") {
+
+                bg.style.background =
+                    value || "#000000";
+
+                return;
+            }
+
+
+            /* IMAGE */
+
+            if (
+                type === "image" &&
+                value
+            ) {
+
+                bg.style.backgroundImage =
+                    `url("${value}")`;
+
+                bg.style.backgroundPosition =
+                    "center";
+
+                bg.style.backgroundSize =
+                    "cover";
+
+                bg.style.backgroundRepeat =
+                    "no-repeat";
+
+                return;
+            }
+
+
+            /* VIDEO */
+
+            if (
+                type === "video" &&
+                value
+            ) {
+
+                const video =
+                    document.createElement("video");
+
+                video.className =
+                    "background-video";
+
+                video.src =
+                    value;
+
+                video.autoplay =
+                    true;
+
+                video.loop =
+                    true;
+
+                video.muted =
+                    true;
+
+                video.playsInline =
+                    true;
+
+                video.preload =
+                    "auto";
+
+
+                bg.appendChild(video);
+
+
+                video.play().catch(
+                    () => {}
+                );
+
+                return;
+            }
+
+
+            /* FALLBACK */
+
+            bg.style.background =
+                `linear-gradient(
+                    135deg,
+                    ${theme.bg1},
+                    ${theme.bg2}
+                )`;
+        }
+
+
+
+
+
+        /* CLOAK SETTINGS */
+
+        function applyCloakSettings() {
+
+            const title =
+                localStorage.getItem(
+                    "cloakTitle"
+                );
+
+
+            const icon =
+                localStorage.getItem(
+                    "cloakIcon"
+                );
+
+
+            if (title) {
+                document.title = title;
+            }
+
+
+            if (icon) {
+
+                document
+                    .querySelectorAll(
+                        'link[rel~="icon"]'
+                    )
+                    .forEach(
+                        link =>
+                            link.remove()
+                    );
+
+
+                const link =
+                    document.createElement(
+                        "link"
+                    );
+
+
+                link.rel =
+                    "icon";
+
+
+                link.href =
+                    icon;
+
+
+                document.head.appendChild(
+                    link
+                );
+            }
+        }
+
+
+        /* APPLY SETTINGS */
+
+        function applySettings() {
+
+            applyTheme();
+
+            applyBackground();
+
+            applyCloakSettings();
+        }
+
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            applySettings
+        );
+
+    </script>
+
+
+    <!-- LUMIN SDK -->
+
+    <script
+        src="https://cdn.jsdelivr.net/gh/luminsdk/script@latest/lumin.min.js"
+        crossorigin="anonymous"
+    ></script>
+
+
+    <!-- GAME SYSTEM -->
+
+    <script>
+
+        const container =
+            document.getElementById(
+                "container"
+            );
+
+
+        const popularContainer =
+            document.getElementById(
+                "popularContainer"
+            );
+
+
+        const popularSection =
+            document.getElementById(
+                "popularSection"
+            );
+
+
+        const allSection =
+            document.getElementById(
+                "allSection"
+            );
+
+
+        const searchBar =
+            document.getElementById(
+                "searchBar"
+            );
+
+
+        const gameCount =
+            document.getElementById(
+                "gameCount"
+            );
+
+
+        const gamePlayer =
+            document.getElementById(
+                "gamePlayer"
+            );
+
+
+        const gameFrame =
+            document.getElementById(
+                "gameFrame"
+            );
+
+
+        const closeGameButton =
+            document.getElementById(
+                "closeGame"
+            );
+
+
+        const navbar =
+            document.getElementById(
+                "navbar"
+            );
+
+
+        let games = [];
+
+        let luminReady = false;
+
+        let searchTimeout;
+
+
+        /* =====================================================
+           POPULAR GAME SETTINGS
+
+           These names are checked first.
+
+           If a game exists in Lumin with one of these names,
+           it will appear in the Popular section.
+        ===================================================== */
+
+        const popularGameNames = [
+
+            "1v1.LOL",
+
+            "BitLife",
+
+            "Cookie Clicker",
+
+            "Drift Boss",
+
+            "Drive Mad",
+
+            "Geometry Dash",
+
+            "Minecraft",
+
+            "Monkey Mart",
+
+            "Moto X3M",
+
+            "Paper.io 2",
+
+            "Retro Bowl",
+
+            "Run 3",
+
+            "Slope",
+
+            "Subway Surfers",
+
+            "Temple Run",
+
+            "Tetris",
+
+            "Tunnel Rush"
+        ];
+
+
+        /* =====================================================
+           INITIALIZE LUMIN
+        ===================================================== */
+
+        async function initializeLumin() {
+
+            try {
+
+                gameCount.textContent =
+                    "Loading Lumin SDK...";
+
+
+                await Lumin.init({
+
+                    headless: true,
+
+                    theme: "dark"
+
+                });
+
+
+                luminReady = true;
+
+
+                await loadAllGames();
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Lumin initialization error:",
+                    error
+                );
+
+
+                gameCount.textContent =
+                    "Could not connect to g@mes";
+
+
+                popularContainer.innerHTML = "";
+
+
+                container.innerHTML = `
+                    <div class="message">
+
+                        <h2>
+                            Could not load g@mes
+                        </h2>
+
+                        <p>
+                            Please reload the page.
+                        </p>
+
+                    </div>
+                `;
+            }
+        }
+
+
+        /* =====================================================
+           LOAD ALL GAMES
+        ===================================================== */
+
+        async function loadAllGames() {
+
+            try {
+
+                container.innerHTML =
+                    `
+                    <div class="loading">
+                        Loading g@mes...
+                    </div>
+                    `;
+
+
+                popularContainer.innerHTML =
+                    `
+                    <div class="loading">
+                        Loading popular g@mes...
+                    </div>
+                    `;
+
+
+                games = [];
+
+
+                let page = 1;
+
+                const limit = 100;
+
+                let totalPages = 1;
+
+
+                while (
+                    page <= totalPages
+                ) {
+
+                    gameCount.textContent =
+                        `Loading activities... ${games.length} loaded`;
+
+
+                    const result =
+                        await Lumin.getGames({
+
+                            page: page,
+
+                            limit: limit
+
+                        });
+
+
+                    const pageGames =
+                        result.games || [];
+
+
+                    games.push(
+                        ...pageGames
+                    );
+
+
+                    totalPages =
+                        result.pages || 1;
+
+
+                    page++;
+                }
+
+
+                gameCount.textContent =
+                    `${games.length} activities loaded`;
+
+
+                renderCategorizedGames();
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Game loading error:",
+                    error
+                );
+
+
+                gameCount.textContent =
+                    "Could not load activities";
+
+
+                popularContainer.innerHTML = "";
+
+
+                container.innerHTML = `
+                    <div class="message">
+
+                        <h2>
+                            Could not load games
+                        </h2>
+
+                        <p>
+                            Try reloading the page.
+                        </p>
+
+                    </div>
+                `;
+            }
+        }
+
+
+        /* =====================================================
+           GET GAME NAME
+        ===================================================== */
+
+        function getGameName(game) {
+
+            return String(
+
+                game.name ||
+
+                game.title ||
+
+                game.id ||
+
+                "Game"
+
+            );
+        }
+
+
+        /* =====================================================
+           CHECK IF POPULAR
+        ===================================================== */
+
+        function isPopularGame(game) {
+
+            const gameName =
+                getGameName(game)
+                    .toLowerCase();
+
+
+            return popularGameNames.some(
+                popularName => {
+
+                    const name =
+                        popularName.toLowerCase();
+
+
+                    return (
+                        gameName === name ||
+
+                        gameName.includes(name) ||
+
+                        name.includes(gameName)
+                    );
+                }
+            );
+        }
+
+
+        /* =====================================================
+           SORT POPULAR
+
+           Keeps popular games in the same order as
+           popularGameNames.
+        ===================================================== */
+
+        function sortPopularGames(
+            gameList
+        ) {
+
+            return [
+                ...gameList
+            ].sort(
+                (a, b) => {
+
+                    const aName =
+                        getGameName(a)
+                            .toLowerCase();
+
+
+                    const bName =
+                        getGameName(b)
+                            .toLowerCase();
+
+
+                    const aIndex =
+                        popularGameNames.findIndex(
+                            name =>
+                                aName.includes(
+                                    name.toLowerCase()
+                                )
+                        );
+
+
+                    const bIndex =
+                        popularGameNames.findIndex(
+                            name =>
+                                bName.includes(
+                                    name.toLowerCase()
+                                )
+                        );
+
+
+                    return aIndex - bIndex;
+                }
+            );
+        }
+
+
+        /* =====================================================
+           RENDER CATEGORIZED GAMES
+        ===================================================== */
+
+        function renderCategorizedGames() {
+
+            const popularGames =
+                games.filter(
+                    isPopularGame
+                );
+
+
+            const otherGames =
+                games.filter(
+                    game =>
+                        !isPopularGame(game)
+                );
+
+
+            const sortedPopular =
+                sortPopularGames(
+                    popularGames
+                );
+
+
+            renderGames(
+                sortedPopular,
+                popularContainer,
+                true
+            );
+
+
+            renderGames(
+                otherGames,
+                container,
+                false
+            );
+
+
+            if (
+                sortedPopular.length === 0
+            ) {
+
+                popularSection.style.display =
+                    "none";
+
+            }
+
+            else {
+
+                popularSection.style.display =
+                    "block";
+            }
+
+
+            gameCount.textContent =
+                `${games.length} g@mes loaded`;
+        }
+
+
+        /* =====================================================
+           CREATE GAME CARD
+        ===================================================== */
+
+        function createGameCard(
+            game,
+            isPopular = false
+        ) {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.className =
+                "game";
+
+
+            button.type =
+                "button";
+
+
+            const gameName =
+                getGameName(game);
+
+
+            button.title =
+                gameName;
+
+
+            button.setAttribute(
+                "aria-label",
+                `Open ${gameName}`
+            );
+
+
+            /* POPULAR BADGE */
+
+            if (isPopular) {
+
+                const badge =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                badge.className =
+                    "popular-badge";
+
+
+                badge.textContent =
+                    "POPULAR";
+
+
+                button.appendChild(
+                    badge
+                );
+            }
+
+
+            /* DEFAULT WALLPAPER */
+
+            const defaultWallpaper =
+                document.createElement(
+                    "div"
+                );
+
+
+            defaultWallpaper.className =
+                "default-wallpaper";
+
+
+            defaultWallpaper.textContent =
+                "";
+
+
+            button.appendChild(
+                defaultWallpaper
+            );
+
+
+            /* GAME IMAGE */
+
+            if (game.image_token) {
+
+                loadGameImage(
+
+                    game,
+
+                    button,
+
+                    defaultWallpaper
+
+                );
+            }
+
+
+            /* TITLE SHADE */
+
+            const shade =
+                document.createElement(
+                    "div"
+                );
+
+
+            shade.className =
+                "game-title-shade";
+
+
+            button.appendChild(
+                shade
+            );
+
+
+            /* GAME TITLE */
+
+            const title =
+                document.createElement(
+                    "div"
+                );
+
+
+            title.className =
+                "game-title";
+
+
+            title.textContent =
+                gameName;
+
+
+            button.appendChild(
+                title
+            );
+
+
+            /* CLICK */
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    openGame(game);
+
+                }
+            );
+
+
+            return button;
+        }
+
+
+        /* =====================================================
+           RENDER GAMES
+        ===================================================== */
+
+        function renderGames(
+            gameList,
+            targetContainer,
+            showPopularBadge = false
+        ) {
+
+            targetContainer.innerHTML =
+                "";
+
+
+            if (
+                gameList.length === 0
+            ) {
+
+                if (
+                    targetContainer === popularContainer
+                ) {
+
+                    return;
+                }
+
+
+                targetContainer.innerHTML =
+                    `
+                    <div class="message">
+
+                        <h2>
+                            No g@mes found
+                        </h2>
+
+                    </div>
+                    `;
+
+                return;
+            }
+
+
+            const fragment =
+                document.createDocumentFragment();
+
+
+            for (
+                const game of gameList
+            ) {
+
+                const card =
+                    createGameCard(
+                        game,
+                        showPopularBadge
+                    );
+
+
+                fragment.appendChild(
+                    card
+                );
+            }
+
+
+            targetContainer.appendChild(
+                fragment
+            );
+        }
+
+
+        /* =====================================================
+           LOAD GAME IMAGE
+        ===================================================== */
+
+        async function loadGameImage(
+            game,
+            button,
+            defaultWallpaper
+        ) {
+
+            try {
+
+                const imageUrl =
+                    await Lumin.getImageUrl(
+                        game.image_token
+                    );
+
+
+                if (!imageUrl) {
+                    return;
+                }
+
+
+                const image =
+                    document.createElement(
+                        "img"
+                    );
+
+
+                image.className =
+                    "game-wallpaper";
+
+
+                image.alt =
+                    getGameName(game);
+
+
+                image.loading =
+                    "lazy";
+
+
+                image.decoding =
+                    "async";
+
+
+                image.src =
+                    imageUrl;
+
+
+                image.onload =
+                    () => {
+
+                        if (
+                            defaultWallpaper.parentNode
+                        ) {
+
+                            defaultWallpaper.remove();
+
+                        }
+                    };
+
+
+                image.onerror =
+                    () => {
+
+                        image.remove();
+
+                    };
+
+
+                button.insertBefore(
+                    image,
+                    button.firstChild
+                );
+
+            }
+
+            catch (error) {
+
+                console.warn(
+                    "Could not load wallpaper:",
+                    getGameName(game),
+                    error
+                );
+            }
+        }
+
+
+        /* =====================================================
+           OPEN GAME
+        ===================================================== */
+
+        async function openGame(
+            game
+        ) {
+
+            if (!luminReady) {
+
+                alert(
+                    "G@mes are still loading."
+                );
+
+                return;
+            }
+
+
+            if (
+                !game ||
+                !game.id
+            ) {
+
+                alert(
+                    "This g@me does not have an ID."
+                );
+
+                return;
+            }
+
+
+            try {
+
+                gamePlayer.classList.add(
+                    "active"
+                );
+
+
+                if (navbar) {
+
+                    navbar.style.display =
+                        "none";
+
+                }
+
+
+                gameFrame.src =
+                    "about:blank";
+
+
+                const result =
+                    await Lumin.getGameUrl(
+                        game.id
+                    );
+
+
+                if (
+                    !result ||
+                    !result.url
+                ) {
+
+                    throw new Error(
+                        "No playable g@me URL received"
+                    );
+                }
+
+
+                gameFrame.src =
+                    result.url;
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Game opening error:",
+                    error
+                );
+
+
+                gamePlayer.classList.remove(
+                    "active"
+                );
+
+
+                if (navbar) {
+
+                    navbar.style.display =
+                        "flex";
+
+                }
+
+
+                gameFrame.src =
+                    "about:blank";
+
+
+                alert(
+                    "Could not load this g@me."
+                );
+            }
+        }
+
+
+        /* =====================================================
+           CLOSE GAME
+        ===================================================== */
+
+        function closeGame() {
+
+            gameFrame.src =
+                "about:blank";
+
+
+            gamePlayer.classList.remove(
+                "active"
+            );
+
+
+            if (navbar) {
+
+                navbar.style.display =
+                    "flex";
+
+            }
+
+
+            try {
+
+                if (
+                    window.Lumin &&
+                    typeof Lumin.endGame ===
+                    "function"
+                ) {
+
+                    Lumin.endGame();
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.log(
+                    "G@me closed"
+                );
+            }
+        }
+
+
+        closeGameButton.addEventListener(
+            "click",
+            closeGame
+        );
+
+
+        /* =====================================================
+           ESCAPE CLOSE
+        ===================================================== */
+
+        document.addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key === "Escape" &&
+                    gamePlayer.classList.contains(
+                        "active"
+                    )
+                ) {
+
+                    closeGame();
+
+                }
+            }
+        );
+
+
+        /* =====================================================
+           SEARCH
+        ===================================================== */
+
+        searchBar.addEventListener(
+            "input",
+            function() {
+
+                clearTimeout(
+                    searchTimeout
+                );
+
+
+                searchTimeout =
+                    setTimeout(
+                        () => {
+
+                            const query =
+                                searchBar.value
+                                    .trim()
+                                    .toLowerCase();
+
+
+                            /* EMPTY SEARCH */
+
+                            if (!query) {
+
+                                popularSection.style.display =
+                                    "block";
+
+
+                                allSection.style.display =
+                                    "block";
+
+
+                                renderCategorizedGames();
+
+                                return;
+                            }
+
+
+                            /* FILTER */
+
+                            const filtered =
+                                games.filter(
+                                    game => {
+
+                                        const name =
+                                            getGameName(game)
+                                                .toLowerCase();
+
+
+                                        const id =
+                                            String(
+                                                game.id ||
+                                                ""
+                                            )
+                                            .toLowerCase();
+
+
+                                        const category =
+                                            String(
+                                                game.category ||
+                                                ""
+                                            )
+                                            .toLowerCase();
+
+
+                                        return (
+
+                                            name.includes(
+                                                query
+                                            )
+
+                                            ||
+
+                                            id.includes(
+                                                query
+                                            )
+
+                                            ||
+
+                                            category.includes(
+                                                query
+                                            )
+                                        );
+                                    }
+                                );
+
+
+                            /* SEARCH RESULTS USE ONE SECTION */
+
+                            popularSection.style.display =
+                                "none";
+
+
+                            allSection.style.display =
+                                "block";
+
+
+                            renderGames(
+                                filtered,
+                                container,
+                                false
+                            );
+
+
+                            gameCount.textContent =
+                                `${filtered.length} of ${games.length} activities`;
+
+                        },
+
+                        200
+                    );
+            }
+        );
+
+
+
+
+        /* =====================================================
+           START
+        ===================================================== */
+
+        initializeLumin();
+
+    </script>
+
+</body>
+</html>

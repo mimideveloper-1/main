@@ -1,0 +1,2268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Clever</title>
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="https://th.bing.com/th/id/ODF.cCsv-cCt-jkEcwiJYMYj4A?w=32&h=32&qlt=90&pcl=fffffc&o=6&pid=1.2"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@300;500;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        :root {
+            --accent1: #9b59b6;
+            --accent2: #c084fc;
+            --theme-bg1: #000000;
+            --theme-bg2: #b700ff;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            overflow-x: hidden;
+            font-family: "Grandstander", cursive;
+            color: white;
+        }
+
+        /* =========================
+           BACKGROUND
+        ========================= */
+
+        #bg {
+            position: fixed;
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--theme-bg1),
+                    var(--theme-bg2)
+                );
+
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .background-video {
+            position: absolute;
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* =========================
+           DARK BACKGROUND OVERLAY
+        ========================= */
+
+        #bg::after {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            background: rgba(0, 0, 0, 0.214);
+
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .background-video {
+            z-index: 0 !important;
+        }
+
+        /* =========================
+           STARS
+        ========================= */
+
+        #starContainer {
+            position: fixed;
+            inset: 0;
+
+            z-index: 2;
+
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+
+            border-radius: 50%;
+
+            background: white;
+
+            opacity: 0.4;
+
+            animation: twinkle infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.2;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.9;
+                transform: scale(1.4);
+            }
+
+        }
+
+        /* =========================
+           CONTENT
+        ========================= */
+
+        .page {
+            position: relative;
+
+            z-index: 3 !important;
+
+            display: flex;
+
+            justify-content: center;
+
+            padding: 40px 0;
+        }
+
+        .panel {
+            width: min(600px, 90vw);
+
+            padding: 30px;
+
+            border-radius: 18px;
+
+            background: transparent;
+
+            backdrop-filter: none;
+
+            box-shadow: none;
+
+            border: none;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .panel button {
+            width: 100%;
+
+            padding: 12px 14px;
+
+            border-radius: 14px;
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.12);
+
+            background:
+                rgba(73, 73, 73, 0.144);
+
+            color: white;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+            font-family:
+                "Grandstander",
+                cursive;
+        }
+
+        .panel button:hover {
+            background:
+                rgba(255, 255, 255, 0.16);
+
+            transform:
+                translateY(-2px);
+        }
+
+        .panel button:active {
+            transform:
+                scale(0.98);
+        }
+
+        .search-engine-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            width: 100%;
+        }
+
+        .search-engine-button {
+            width: 100%;
+            min-height: 48px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(73,73,73,.144);
+            color: white;
+            cursor: pointer;
+            transition: .2s ease;
+            font-family: "Grandstander", cursive;
+        }
+
+        .search-engine-button:hover {
+            border-color: var(--accent2);
+            background: color-mix(in srgb, var(--accent1) 20%, rgba(73,73,73,.144));
+            transform: translateY(-2px);
+        }
+
+        .search-engine-button.active {
+            border-color: var(--accent2);
+            background: color-mix(in srgb, var(--accent1) 28%, rgba(73,73,73,.144));
+            color: white;
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent1) 18%, transparent);
+        }
+
+        @media (max-width: 600px) {
+            .search-engine-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* =========================
+           GROUPS
+        ========================= */
+
+        .group {
+            width: 100%;
+
+            padding: 12px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(0, 0, 0, 0.096);
+
+            margin: 20px 0;
+
+            font-family:
+                "Grandstander",
+                cursive;
+
+            box-sizing: border-box;
+        }
+
+        .group h2 {
+            text-align: center;
+        }
+
+        /* =========================
+           SMALL BUTTONS
+        ========================= */
+
+        .small {
+            width: 42px;
+            height: 30px;
+
+            padding: 0;
+
+            border-radius: 8px;
+        }
+
+        .nf {
+            background-color:
+                rgba(255, 255, 255, 0.151);
+
+            border-color: white;
+
+            color: white;
+
+            font-family:
+                "Grandstander",
+                cursive;
+        }
+
+        .random-input {
+            font-family:
+                "Grandstander",
+                cursive;
+
+            background-color:
+                rgba(255, 255, 255, 0.18);
+        }
+
+        /* =========================
+           INPUTS
+        ========================= */
+
+        input,
+        select {
+            width: 100%;
+
+            padding: 10px;
+
+            border-radius: 10px;
+
+            border: none;
+
+            outline: none;
+
+            text-align: center;
+
+            box-sizing: border-box;
+
+            font-family:
+                "Grandstander",
+                cursive;
+        }
+
+        /* =========================
+           SETTINGS
+        ========================= */
+
+        .settings-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(100px, 1fr)
+                );
+
+            gap: 12px;
+
+            width: 100%;
+
+            max-width: 620px;
+
+            height: 420px;
+
+            overflow-y: auto;
+
+            overflow-x: hidden;
+
+            padding-right: 6px;
+
+            margin: auto;
+        }
+
+        .setting-btn {
+            max-width: 170px;
+
+            min-height: 70px;
+
+            border-radius: 14px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            flex-direction: column;
+
+            text-align: center;
+
+            font-size: 12px;
+
+            gap: 3px;
+
+            font-family:
+                "Grandstander",
+                cursive;
+        }
+
+        .setting-btn:hover {
+            transform:
+                translateY(-2px);
+        }
+
+        .setting-btn.active {
+
+            border:
+                1px solid
+                rgba(110, 190, 255, 0.95);
+
+            box-shadow:
+                0 0 12px
+                rgba(110, 190, 255, 0.35),
+
+                0 0 24px
+                rgba(110, 190, 255, 0.18),
+
+                inset 0 0 12px
+                rgba(110, 190, 255, 0.08);
+
+            background:
+                rgba(255, 255, 255, 0.08);
+
+            transform:
+                translateY(-2px);
+        }
+
+        .button-container {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            max-height: 300px;
+
+            overflow-y: auto;
+
+            overflow-x: hidden;
+
+            padding: 10px;
+        }
+
+        .button-container button {
+            flex: 1 1 120px;
+
+            min-width: 120px;
+
+            padding: 12px;
+
+            border-radius: 12px;
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.12);
+
+            background:
+                rgba(255, 255, 255, 0.06);
+
+            color: white;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+            font-family:
+                "Grandstander",
+                cursive;
+        }
+
+        .button-container button:hover {
+            transform:
+                translateY(-2px);
+
+            background:
+                rgba(255, 255, 255, 0.12);
+        }
+
+        /* =========================
+           THEME BUTTONS
+        ========================= */
+
+        .theme-btn {
+            min-height: 75px !important;
+
+            font-size: 14px !important;
+
+            font-weight: 600;
+        }
+
+        .theme-preview {
+            width: 45px;
+            height: 15px;
+
+            border-radius: 20px;
+
+            margin-bottom: 4px;
+        }
+
+        .theme-default .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #000,
+                    #b700ff
+                );
+        }
+
+        .theme-girly .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #ff69b4,
+                    #ffb6d9
+                );
+        }
+
+        .theme-hacker .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #001a00,
+                    #00ff55
+                );
+        }
+
+        .theme-ocean .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #001f3f,
+                    #00aaff
+                );
+        }
+
+        .theme-forest .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #071a0b,
+                    #238636
+                );
+        }
+
+        .theme-sunset .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #ff512f,
+                    #dd2476
+                );
+        }
+
+        .theme-purple .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #4b0082,
+                    #b026ff
+                );
+        }
+
+        .theme-cyber .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #ff00cc,
+                    #3333ff
+                );
+        }
+
+        .theme-red .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #3a0000,
+                    #ff2020
+                );
+        }
+
+        .theme-midnight .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #020024,
+                    #090979
+                );
+        }
+
+        .theme-ice .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #003b46,
+                    #66e6ff
+                );
+        }
+
+        .theme-gold .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #3d2800,
+                    #ffd700
+                );
+        }
+
+        .theme-cherry .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #250008,
+                    #d90429
+                );
+        }
+
+        .theme-lavender .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #301934,
+                    #c77dff
+                );
+        }
+
+        .theme-neon .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #00ffea,
+                    #ff00ff
+                );
+        }
+
+        .theme-coffee .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #1b0f08,
+                    #8b4513
+                );
+        }
+
+        .theme-emerald .theme-preview {
+            background:
+                linear-gradient(
+                    90deg,
+                    #001f16,
+                    #00c878
+                );
+        }
+
+        /* =========================
+           SEARCH ENGINE
+        ========================= */
+
+        .search-engine-picker {
+            padding: 14px;
+
+            border: 1px solid rgba(255, 255, 255, 0.12);
+
+            border-radius: 14px;
+
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .search-engine-labels {
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 16px;
+
+            margin-bottom: 12px;
+
+            font-size: 14px;
+        }
+
+        .search-engine-labels span {
+            color: rgba(255, 255, 255, 0.5);
+
+            transition: color 0.2s ease;
+        }
+
+        .search-engine-labels .is-selected {
+            color: white;
+
+            font-weight: 600;
+        }
+
+        .search-engine-switch {
+            position: relative;
+
+            width: 42px;
+
+            height: 23px;
+
+            display: block;
+
+            margin: 0 auto;
+
+            cursor: pointer;
+        }
+
+        .search-engine-switch input {
+            position: absolute;
+
+            width: 1px;
+
+            height: 1px;
+
+            margin: -1px;
+
+            overflow: hidden;
+
+            clip: rect(0 0 0 0);
+        }
+
+        .search-engine-switch-track {
+            position: absolute;
+
+            inset: 0;
+
+            border: 1px solid rgba(255, 255, 255, 0.22);
+
+            border-radius: 999px;
+
+            background: rgba(255, 255, 255, 0.16);
+
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .search-engine-switch-track::after {
+            content: "";
+
+            position: absolute;
+
+            top: 3px;
+
+            left: 3px;
+
+            width: 15px;
+
+            height: 15px;
+
+            border-radius: 50%;
+
+            background: white;
+
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+
+            transition: transform 0.2s ease;
+        }
+
+        .search-engine-switch input:checked + .search-engine-switch-track {
+            border-color: color-mix(in srgb, var(--accent2) 80%, white);
+
+            background: linear-gradient(
+                90deg,
+                var(--accent1),
+                var(--accent2)
+            );
+        }
+
+        .search-engine-switch input:checked + .search-engine-switch-track::after {
+            transform: translateX(19px);
+        }
+
+        .search-engine-switch input:focus-visible + .search-engine-switch-track {
+            outline: 2px solid white;
+
+            outline-offset: 3px;
+        }
+
+        /* =========================
+           INACTIVE TAB OVERLAY
+        ========================= */
+
+        #inactiveOverlay {
+            position: fixed;
+
+            inset: 0;
+
+            background: #000;
+
+            z-index: 999999999;
+
+            display: none;
+
+            pointer-events: none;
+        }
+
+        #inactiveOverlay.active {
+            display: block;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- BACKGROUND -->
+
+    <div id="bg"></div>
+
+
+    <!-- STARS -->
+
+    <div id="starContainer"></div>
+
+
+    <!-- CONTENT -->
+
+    <div class="page">
+
+        <div class="panel">
+
+            <h1>settings</h1>
+
+
+            <button onclick="location.href='home.html'">
+                ⬅ Back
+            </button>
+
+
+            <button onclick="openBlank()">
+                Open in about:blank
+            </button>
+
+
+            <!-- =========================
+                 THEMES
+            ========================= -->
+
+            <div class="group">
+
+                <h2>Themes</h2>
+
+                <div class="button-container">
+
+                    <button
+                        class="setting-btn theme-btn theme-default"
+                        data-theme="default"
+                        onclick="setTheme('default')"
+                    >
+                        <div class="theme-preview"></div>
+                        Default
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-girly"
+                        data-theme="girly"
+                        onclick="setTheme('girly')"
+                    >
+                        <div class="theme-preview"></div>
+                        💗 Girly
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-hacker"
+                        data-theme="hacker"
+                        onclick="setTheme('hacker')"
+                    >
+                        <div class="theme-preview"></div>
+                        💻 Hacker
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-ocean"
+                        data-theme="ocean"
+                        onclick="setTheme('ocean')"
+                    >
+                        <div class="theme-preview"></div>
+                        🌊 Ocean
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-forest"
+                        data-theme="forest"
+                        onclick="setTheme('forest')"
+                    >
+                        <div class="theme-preview"></div>
+                        🌲 Forest
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-sunset"
+                        data-theme="sunset"
+                        onclick="setTheme('sunset')"
+                    >
+                        <div class="theme-preview"></div>
+                        🌅 Sunset
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-purple"
+                        data-theme="purple"
+                        onclick="setTheme('purple')"
+                    >
+                        <div class="theme-preview"></div>
+                        💜 Purple
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-cyber"
+                        data-theme="cyber"
+                        onclick="setTheme('cyber')"
+                    >
+                        <div class="theme-preview"></div>
+                        🟣 Cyber
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-red"
+                        data-theme="red"
+                        onclick="setTheme('red')"
+                    >
+                        <div class="theme-preview"></div>
+                        ❤️ Red
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-midnight"
+                        data-theme="midnight"
+                        onclick="setTheme('midnight')"
+                    >
+                        <div class="theme-preview"></div>
+                        🌌 Midnight
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-ice"
+                        data-theme="ice"
+                        onclick="setTheme('ice')"
+                    >
+                        <div class="theme-preview"></div>
+                        🧊 Ice
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-gold"
+                        data-theme="gold"
+                        onclick="setTheme('gold')"
+                    >
+                        <div class="theme-preview"></div>
+                        ⭐ Gold
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-cherry"
+                        data-theme="cherry"
+                        onclick="setTheme('cherry')"
+                    >
+                        <div class="theme-preview"></div>
+                        🍒 Cherry
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-lavender"
+                        data-theme="lavender"
+                        onclick="setTheme('lavender')"
+                    >
+                        <div class="theme-preview"></div>
+                        🪻 Lavender
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-neon"
+                        data-theme="neon"
+                        onclick="setTheme('neon')"
+                    >
+                        <div class="theme-preview"></div>
+                        ⚡ Neon
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-coffee"
+                        data-theme="coffee"
+                        onclick="setTheme('coffee')"
+                    >
+                        <div class="theme-preview"></div>
+                        ☕ Coffee
+                    </button>
+
+
+                    <button
+                        class="setting-btn theme-btn theme-emerald"
+                        data-theme="emerald"
+                        onclick="setTheme('emerald')"
+                    >
+                        <div class="theme-preview"></div>
+                        💚 Emerald
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 BACKGROUNDS
+            ========================= -->
+
+            <div class="group">
+
+                <h2>Backgrounds</h2>
+
+                <div class="button-container">
+
+
+                    <!-- NONE -->
+
+                    <button
+                        class="setting-btn"
+                        data-type="none"
+                        data-bg=""
+                        onclick="setBackground('none')"
+                    >
+                        None
+                    </button>
+
+
+                    <!-- DEFAULT VIDEO -->
+
+                    <button
+                        class="setting-btn"
+                        data-type="video"
+                        data-bg="/background-imgs/MOMMY ANIMATION MEME.mp4"
+                        onclick="setBackground(
+                            'video',
+                            '/background-imgs/MOMMY ANIMATION MEME.mp4'
+                        )"
+                    >
+                        Default
+                    </button>
+
+
+                    <!-- SIGEON -->
+
+                    <button
+                        class="setting-btn"
+                        data-type="image"
+                        data-bg="/background-imgs/sigeon.gif"
+                        onclick="setBackground(
+                            'image',
+                            '/background-imgs/sigeon.gif'
+                        )"
+                    >
+                        Sigeon pex
+                    </button>
+
+
+                    <!-- SQUIRREL -->
+
+                    <button
+                        class="setting-btn"
+                        data-type="image"
+                        data-bg="/background-imgs/squirrel.gif"
+                        onclick="setBackground(
+                            'image',
+                            '/background-imgs/squirrel.gif'
+                        )"
+                    >
+                        Dancing Squirrel
+                    </button>
+
+
+                    <!-- BATTLE -->
+
+                    <button
+                        class="setting-btn"
+                        data-type="image"
+                        data-bg="/background-imgs/battle.gif"
+                        onclick="setBackground(
+                            'image',
+                            '/background-imgs/battle.gif'
+                        )"
+                    >
+                        King of Island vs King of Mansion
+                    </button>
+
+
+                    <!-- TETO -->
+
+                    <button
+                        class="setting-btn"
+                        data-type="image"
+                        data-bg="/background-imgs/h.jpg"
+                        onclick="setBackground(
+                            'image',
+                            '/background-imgs/h.jpg'
+                        )"
+                    >
+                        Idk
+                    </button>
+
+
+                    <!-- CAT BATTLE -->
+
+                    <button
+                        class="setting-btn"
+                        data-type="image"
+                        data-bg="/background-imgs/cat-battle.gif"
+                        onclick="setBackground(
+                            'image',
+                            '/background-imgs/cat-battle.gif'
+                        )"
+                    >
+                        Cat Battle
+                    </button>
+
+
+                    <!-- MINECRAFT CAT -->
+
+                    <button
+                        class="setting-btn"
+                        data-type="image"
+                        data-bg="/background-imgs/catt.gif"
+                        onclick="setBackground(
+                            'image',
+                            '/background-imgs/catt.gif'
+                        )"
+                    >
+                        Chill Minecraft Cat
+                    </button>
+
+
+                    <!-- MIMI -->
+
+                    <button
+                        class="setting-btn"
+                        data-type="image"
+                        data-bg="/background-imgs/mimicrop.png"
+                        onclick="setBackground(
+                            'image',
+                            '/background-imgs/mimicrop.png'
+                        )"
+                    >
+                        Mimi
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 SEARCH ENGINE
+            ========================= -->
+
+            <div class="group">
+
+                <h2>Search Queries</h2>
+
+                <div class="search-engine-buttons">
+
+                    <button
+                        type="button"
+                        class="search-engine-button"
+                        id="duckduckgoButton">
+                        DuckDuckGo
+                    </button>
+
+                    <button
+                        type="button"
+                        class="search-engine-button"
+                        id="braveButton">
+                        Brave
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 TAB CLOAK
+            ========================= -->
+
+            <div class="group">
+
+                <h2>Tab Cloak</h2>
+
+                <select
+                    class="random-input"
+                    id="cloakPreset"
+                >
+
+                    <option value="clever">
+                        Clever
+                    </option>
+
+                    <option value="google">
+                        Google
+                    </option>
+
+                    <option value="classroom">
+                        Classroom
+                    </option>
+
+                    <option value="drive">
+                        Drive
+                    </option>
+
+                    <option value="docs">
+                        Docs
+                    </option>
+
+                    <option value="bing">
+                        Bing
+                    </option>
+
+                    <option value="youtube">
+                        YouTube
+                    </option>
+
+                    <option value="khan">
+                        Khan Academy
+                    </option>
+
+                    <option value="edmodo">
+                        Edmodo
+                    </option>
+
+                </select>
+
+
+                <input
+                    id="titleInput"
+                    class="nf"
+                    placeholder="Custom Title"
+                >
+
+
+                <input
+                    id="iconInput"
+                    class="nf"
+                    placeholder="Favicon URL"
+                >
+
+
+                <button
+                    class="nf"
+                    onclick="applyCloak()"
+                >
+                    Apply Cloak
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div id="inactiveOverlay"></div>
+
+
+    <!-- =========================
+         THEME SYSTEM
+    ========================= -->
+
+    <script>
+
+        const themes = {
+
+            default: {
+                accent1: "#9b59b6",
+                accent2: "#c084fc",
+                bg1: "#000000",
+                bg2: "#b700ff"
+            },
+
+            girly: {
+                accent1: "#ff69b4",
+                accent2: "#ffb6d9",
+                bg1: "#3a001f",
+                bg2: "#ff69b4"
+            },
+
+            hacker: {
+                accent1: "#00ff55",
+                accent2: "#00cc44",
+                bg1: "#000800",
+                bg2: "#003b15"
+            },
+
+            ocean: {
+                accent1: "#00aaff",
+                accent2: "#66ddff",
+                bg1: "#00101f",
+                bg2: "#0066aa"
+            },
+
+            forest: {
+                accent1: "#35c759",
+                accent2: "#8bdc8b",
+                bg1: "#031007",
+                bg2: "#176b2c"
+            },
+
+            sunset: {
+                accent1: "#ff512f",
+                accent2: "#dd2476",
+                bg1: "#200000",
+                bg2: "#ff512f"
+            },
+
+            purple: {
+                accent1: "#b026ff",
+                accent2: "#d580ff",
+                bg1: "#100020",
+                bg2: "#6a00a8"
+            },
+
+            cyber: {
+                accent1: "#ff00cc",
+                accent2: "#3333ff",
+                bg1: "#08000f",
+                bg2: "#330066"
+            },
+
+            red: {
+                accent1: "#ff2020",
+                accent2: "#ff6666",
+                bg1: "#120000",
+                bg2: "#8b0000"
+            },
+
+            midnight: {
+                accent1: "#4d6cff",
+                accent2: "#7289ff",
+                bg1: "#020024",
+                bg2: "#090979"
+            },
+
+            ice: {
+                accent1: "#66e6ff",
+                accent2: "#b8f5ff",
+                bg1: "#00151c",
+                bg2: "#006b7a"
+            },
+
+            gold: {
+                accent1: "#ffd700",
+                accent2: "#fff09a",
+                bg1: "#160e00",
+                bg2: "#806000"
+            },
+
+            cherry: {
+                accent1: "#ff1744",
+                accent2: "#ff6685",
+                bg1: "#180006",
+                bg2: "#8b001c"
+            },
+
+            lavender: {
+                accent1: "#c77dff",
+                accent2: "#e0aaff",
+                bg1: "#100818",
+                bg2: "#5a189a"
+            },
+
+            neon: {
+                accent1: "#00ffea",
+                accent2: "#ff00ff",
+                bg1: "#000b12",
+                bg2: "#260026"
+            },
+
+            coffee: {
+                accent1: "#d2691e",
+                accent2: "#f4a460",
+                bg1: "#100804",
+                bg2: "#5c2e0e"
+            },
+
+            emerald: {
+                accent1: "#00c878",
+                accent2: "#63ffb5",
+                bg1: "#00140e",
+                bg2: "#006b43"
+            }
+
+        };
+
+
+        function getCurrentTheme() {
+
+            const themeName =
+                localStorage.getItem("selectedTheme") ||
+                "default";
+
+            return themes[themeName] ||
+                themes.default;
+
+        }
+
+
+        function showThemeBackground() {
+
+            const bg =
+                document.getElementById("bg");
+
+            const theme =
+                getCurrentTheme();
+
+            if (!bg) return;
+
+            bg.style.background =
+                `linear-gradient(
+                    135deg,
+                    ${theme.bg1},
+                    ${theme.bg2}
+                )`;
+
+            bg.style.backgroundImage =
+                `linear-gradient(
+                    135deg,
+                    ${theme.bg1},
+                    ${theme.bg2}
+                )`;
+
+        }
+
+
+        function setTheme(themeName) {
+
+            if (!themes[themeName]) return;
+
+            localStorage.setItem(
+                "selectedTheme",
+                themeName
+            );
+
+            applyTheme();
+
+            /*
+                Reapply background so None updates
+                to the newly selected theme.
+            */
+
+            applyBackground();
+
+        }
+
+
+        function applyTheme() {
+
+            const theme =
+                getCurrentTheme();
+
+            document.documentElement.style.setProperty(
+                "--accent1",
+                theme.accent1
+            );
+
+            document.documentElement.style.setProperty(
+                "--accent2",
+                theme.accent2
+            );
+
+            document.documentElement.style.setProperty(
+                "--theme-bg1",
+                theme.bg1
+            );
+
+            document.documentElement.style.setProperty(
+                "--theme-bg2",
+                theme.bg2
+            );
+
+            updateThemeButtons();
+
+        }
+
+
+        function updateThemeButtons() {
+
+            const current =
+                localStorage.getItem(
+                    "selectedTheme"
+                ) || "default";
+
+            document
+                .querySelectorAll("[data-theme]")
+                .forEach(button => {
+
+                    button.classList.toggle(
+                        "active",
+                        button.dataset.theme === current
+                    );
+
+                });
+
+        }
+
+    </script>
+
+
+    <!-- =========================
+         BACKGROUND SYSTEM
+    ========================= -->
+
+    <script>
+
+        const DEFAULT_BACKGROUND =
+            "/background-imgs/MOMMY ANIMATION MEME.mp4";
+
+
+        function setBackground(
+            type,
+            value = ""
+        ) {
+
+            localStorage.setItem(
+                "bgType",
+                type
+            );
+
+            localStorage.setItem(
+                "bgValue",
+                value
+            );
+
+            localStorage.setItem(
+                "activeBackground",
+                value || type
+            );
+
+            applyBackground();
+
+            updateActiveBackgroundButton();
+
+        }
+
+
+        function updateActiveBackgroundButton() {
+
+            const type =
+                localStorage.getItem(
+                    "bgType"
+                ) || "video";
+
+            const value =
+                localStorage.getItem(
+                    "bgValue"
+                ) || DEFAULT_BACKGROUND;
+
+
+            document
+                .querySelectorAll(
+                    ".button-container .setting-btn[data-type]"
+                )
+                .forEach(button => {
+
+                    button.classList.remove(
+                        "active"
+                    );
+
+
+                    const buttonType =
+                        button.dataset.type || "";
+
+                    const buttonValue =
+                        button.dataset.bg || "";
+
+
+                    if (
+                        buttonType === type &&
+                        buttonValue === value
+                    ) {
+
+                        button.classList.add(
+                            "active"
+                        );
+
+                    }
+
+                });
+
+        }
+
+
+        function removeOldVideo(bg) {
+
+            const oldVideo =
+                bg.querySelector(
+                    ".background-video"
+                );
+
+            if (oldVideo) {
+
+                oldVideo.pause();
+
+                oldVideo.remove();
+
+            }
+
+        }
+
+
+        function applyBackground() {
+
+            let type =
+                localStorage.getItem(
+                    "bgType"
+                );
+
+            let value =
+                localStorage.getItem(
+                    "bgValue"
+                );
+
+
+            /*
+                New users get Default video.
+            */
+
+            if (!type) {
+
+                type = "video";
+
+                value =
+                    DEFAULT_BACKGROUND;
+
+                localStorage.setItem(
+                    "bgType",
+                    type
+                );
+
+                localStorage.setItem(
+                    "bgValue",
+                    value
+                );
+
+            }
+
+
+            const bg =
+                document.getElementById("bg");
+
+            if (!bg) return;
+
+
+            /*
+                Remove previous video.
+            */
+
+            removeOldVideo(bg);
+
+
+            /*
+                Reset background.
+            */
+
+            bg.style.background = "none";
+
+            bg.style.backgroundImage = "none";
+
+            bg.style.backgroundColor = "transparent";
+
+
+            /*
+                NONE
+            */
+
+            if (type === "none") {
+
+                showThemeBackground();
+
+                return;
+
+            }
+
+
+            /*
+                Missing value fallback.
+            */
+
+            if (!value) {
+
+                showThemeBackground();
+
+                return;
+
+            }
+
+
+            /*
+                IMAGE / GIF
+            */
+
+            if (type === "image") {
+
+                bg.style.backgroundImage =
+                    `url("${value}")`;
+
+                bg.style.backgroundPosition =
+                    "center";
+
+                bg.style.backgroundSize =
+                    "cover";
+
+                bg.style.backgroundRepeat =
+                    "no-repeat";
+
+                return;
+
+            }
+
+
+            /*
+                VIDEO
+            */
+
+            if (type === "video") {
+
+                const video =
+                    document.createElement(
+                        "video"
+                    );
+
+                video.className =
+                    "background-video";
+
+                video.src = value;
+
+                video.autoplay = true;
+
+                video.loop = true;
+
+                video.muted = true;
+
+                video.defaultMuted = true;
+
+                video.playsInline = true;
+
+                video.preload = "auto";
+
+                video.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+
+                bg.appendChild(video);
+
+
+                video.play()
+                    .catch(() => {
+
+                        /*
+                            Browser may wait until
+                            interaction. Keep the
+                            video element available.
+                        */
+
+                    });
+
+
+                video.addEventListener(
+                    "error",
+                    () => {
+
+                        video.remove();
+
+                        showThemeBackground();
+
+                    }
+                );
+
+
+                return;
+
+            }
+
+
+            /*
+                Unknown background type.
+            */
+
+            showThemeBackground();
+
+        }
+
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                applyTheme();
+
+                applyBackground();
+
+                updateActiveBackgroundButton();
+
+                updateThemeButtons();
+
+            }
+        );
+
+    </script>
+
+
+    <!-- =========================
+         SEARCH ENGINE
+    ========================= -->
+
+    <script>
+
+        const SEARCH_ENGINE_STORAGE_KEY =
+            "searchEngine";
+
+        function getSelectedSearchEngine() {
+
+            return localStorage.getItem(
+                SEARCH_ENGINE_STORAGE_KEY
+            ) === "brave"
+                ? "brave"
+                : "duckduckgo";
+
+        }
+
+        function updateSearchEngineButtons() {
+
+            const engine =
+                getSelectedSearchEngine();
+
+            const duckButton =
+                document.getElementById("duckduckgoButton");
+
+            const braveButton =
+                document.getElementById("braveButton");
+
+            if (duckButton) {
+                duckButton.classList.toggle(
+                    "active",
+                    engine === "duckduckgo"
+                );
+            }
+
+            if (braveButton) {
+                braveButton.classList.toggle(
+                    "active",
+                    engine === "brave"
+                );
+            }
+
+        }
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                const duckButton =
+                    document.getElementById("duckduckgoButton");
+
+                const braveButton =
+                    document.getElementById("braveButton");
+
+                if (duckButton) {
+                    duckButton.addEventListener(
+                        "click",
+                        () => {
+                            localStorage.setItem(
+                                SEARCH_ENGINE_STORAGE_KEY,
+                                "duckduckgo"
+                            );
+                            updateSearchEngineButtons();
+                        }
+                    );
+                }
+
+                if (braveButton) {
+                    braveButton.addEventListener(
+                        "click",
+                        () => {
+                            localStorage.setItem(
+                                SEARCH_ENGINE_STORAGE_KEY,
+                                "brave"
+                            );
+                            updateSearchEngineButtons();
+                        }
+                    );
+                }
+
+                updateSearchEngineButtons();
+
+            }
+        );
+
+    </script>
+
+
+
+
+
+    <!-- =========================
+         TAB CLOAK
+    ========================= -->
+
+    <script>
+
+        const presets = {
+
+            clever: {
+                title: "Clever",
+                icon: "https://th.bing.com/th/id/ODF.cCsv-cCt-jkEcwiJYMYj4A?w=32&h=32&qlt=90&pcl=fffffc&o=6&pid=1.2"
+            },
+
+            google: {
+                title: "Google",
+                icon: "https://www.google.com/favicon.ico"
+            },
+
+            classroom: {
+                title: "Classroom",
+                icon: "https://ssl.gstatic.com/classroom/favicon.png"
+            },
+
+            drive: {
+                title: "Drive",
+                icon: "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png"
+            },
+
+            docs: {
+                title: "Docs",
+                icon: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico"
+            },
+
+            bing: {
+                title: "Bing",
+                icon: "https://www.bing.com/sa/simg/favicon-2x.ico"
+            },
+
+            youtube: {
+                title: "YouTube",
+                icon: "https://www.youtube.com/favicon.ico"
+            },
+
+            khan: {
+                title: "Khan Academy",
+                icon: "https://www.khanacademy.org/favicon.ico"
+            },
+
+            edmodo: {
+                title: "Edmodo",
+                icon: "https://cdn.edmodo.com/favicon.ico"
+            }
+
+        };
+
+
+        const cloakPreset =
+            document.getElementById(
+                "cloakPreset"
+            );
+
+
+        if (cloakPreset) {
+
+            cloakPreset.addEventListener(
+                "change",
+                function () {
+
+                    const val =
+                        this.value;
+
+
+                    if (presets[val]) {
+
+                        document.getElementById(
+                            "titleInput"
+                        ).value =
+                            presets[val].title;
+
+
+                        document.getElementById(
+                            "iconInput"
+                        ).value =
+                            presets[val].icon;
+
+
+                        applyCloak();
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        function applyCloak() {
+
+            const title =
+                document.getElementById(
+                    "titleInput"
+                ).value;
+
+
+            const icon =
+                document.getElementById(
+                    "iconInput"
+                ).value;
+
+
+            if (title) {
+
+                document.title =
+                    title;
+
+
+                localStorage.setItem(
+                    "cloakTitle",
+                    title
+                );
+
+            }
+
+
+            if (icon) {
+
+                let link =
+                    document.querySelector(
+                        "link[rel~='icon']"
+                    );
+
+
+                if (!link) {
+
+                    link =
+                        document.createElement(
+                            "link"
+                        );
+
+                    link.rel = "icon";
+
+                    document.head.appendChild(
+                        link
+                    );
+
+                }
+
+
+                link.href =
+                    icon;
+
+
+                localStorage.setItem(
+                    "cloakIcon",
+                    icon
+                );
+
+            }
+
+        }
+
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                const title =
+                    localStorage.getItem(
+                        "cloakTitle"
+                    );
+
+
+                const icon =
+                    localStorage.getItem(
+                        "cloakIcon"
+                    );
+
+
+                if (title) {
+
+                    document.title =
+                        title;
+
+
+                    document.getElementById(
+                        "titleInput"
+                    ).value =
+                        title;
+
+                }
+
+
+                if (icon) {
+
+                    document.getElementById(
+                        "iconInput"
+                    ).value =
+                        icon;
+
+
+                    const link =
+                        document.querySelector(
+                            "link[rel~='icon']"
+                        );
+
+
+                    if (link) {
+
+                        link.href =
+                            icon;
+
+                    }
+
+                }
+
+            }
+        );
+
+    </script>
+
+
+    <!-- =========================
+         ABOUT:BLANK
+    ========================= -->
+
+    <script>
+
+        function openBlank() {
+
+            const win =
+                window.open(
+                    "about:blank",
+                    "_blank"
+                );
+
+
+            if (!win) {
+
+                alert(
+                    "Popup blocked"
+                );
+
+                return;
+
+            }
+
+
+            const iframe =
+                win.document.createElement(
+                    "iframe"
+                );
+
+
+            iframe.style.width =
+                "100%";
+
+            iframe.style.height =
+                "100%";
+
+            iframe.style.border =
+                "none";
+
+
+            iframe.src =
+                location.href;
+
+
+            win.document.body.style.margin =
+                "0";
+
+
+            win.document.body.appendChild(
+                iframe
+            );
+
+        }
+
+    </script>
+
+
+    <!-- =========================
+         PRIVACY / INACTIVE TAB
+    ========================= -->
+
+    <script>
+
+        const inactiveOverlay =
+            document.getElementById(
+                "inactiveOverlay"
+            );
+
+
+        function updateInactiveOverlay() {
+
+            if (document.hidden) {
+
+                inactiveOverlay.classList.add(
+                    "active"
+                );
+
+            }
+
+            else {
+
+                inactiveOverlay.classList.remove(
+                    "active"
+                );
+
+            }
+
+        }
+
+
+        document.addEventListener(
+            "visibilitychange",
+            updateInactiveOverlay
+        );
+
+
+        window.addEventListener(
+            "blur",
+            () => {
+
+                inactiveOverlay.classList.add(
+                    "active"
+                );
+
+            }
+        );
+
+
+        window.addEventListener(
+            "focus",
+            () => {
+
+                if (!document.hidden) {
+
+                    inactiveOverlay.classList.remove(
+                        "active"
+                    );
+
+                }
+
+            }
+        );
+
+
+        updateInactiveOverlay();
+
+    </script>
+
+</body>
+</html>

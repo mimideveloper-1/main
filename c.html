@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Clever</title>
+    <link rel="icon" type="image/png" href="https://th.bing.com/th/id/ODF.cCsv-cCt-jkEcwiJYMYj4A?w=32&h=32&qlt=90&pcl=fffffc&o=6&pid=1.2">
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* Panel */
+      .panel {
+        background: rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(15px);
+        padding: 40px 20px;
+        border-radius: 90px;
+        text-align: center;
+        width: 150%;
+        max-width: 700px;
+        margin-top: 100px;
+        background: transparent;
+        backdrop-filter: none;
+        box-shadow: none;
+        border: none;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Grandstander", cursive;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Stars */
+      .star {
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0.2;
+        animation: twinkle infinite ease-in-out;
+      }
+
+      @keyframes twinkle {
+        0% {
+          opacity: 0.2;
+          transform: scale(0.8);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.4);
+        }
+        100% {
+          opacity: 0.2;
+          transform: scale(0.8);
+        }
+      }
+
+      :root {
+        --navbar-bg: rgba(0, 0, 0, 0.05);
+        --navbar-border: rgba(82, 82, 82, 0.288);
+      }
+
+      .navbar {
+        position: fixed;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+
+        display: flex;
+        gap: 8px;
+        padding: 8px 12px;
+
+        border-radius: 18px;
+
+        background: var(--navbar-bg);
+        backdrop-filter: blur(12px);
+
+        border: 1px solid var(--navbar-border);
+
+        box-shadow:
+          0 0 25px var(--accent1),
+          inset 0 0 10px rgba(255, 255, 255, 0.05);
+
+        z-index: 9999;
+        color: rgba(255, 255, 255, 0.295);
+        opacity: 1;
+      }
+      :root {
+        --navbar-bg: rgba(20, 20, 20, 0.7);
+        --navbar-border: rgba(255, 255, 255, 0.1);
+      }
+
+      /* BUTTONS */
+      .nav-btn {
+        width: 40px;
+        height: 25px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        border-radius: 10px;
+
+        transition: 0.2s;
+        overlay: auto;
+      }
+
+      /* ICONS */
+      .nav-btn-img {
+        width: 18px;
+        height: 18px;
+        fill: white;
+        stroke: white;
+        stroke-width: 1.5;
+        opacity: 0.8;
+        overlay: auto;
+      }
+
+      /* HOVER */
+      .nav-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      /* ACTIVE */
+      .nav-btn.active {
+        background: linear-gradient(135deg, var(--accent1), var(--accent2));
+
+        box-shadow:
+          0 0 12px var(--accent1),
+          0 0 20px var(--accent2);
+      }
+
+      /* PAGES */
+      .page {
+        display: none;
+        padding: 100px 20px;
+        color: white;
+      }
+
+      .page.active {
+        display: block;
+      }
+      .navbargame {
+        height: 18px;
+        width: 18px;
+      }
+      .nav-btn-game {
+        opacity: 0.8;
+        height: 18px;
+        width: 22px;
+      }
+
+      /* Title */
+      h1 {
+        margin-bottom: 5px;
+      }
+
+      h4 {
+        margin-top: 0;
+        opacity: 0.7;
+      }
+
+      /* Apps row */
+      .apps {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 30px;
+      }
+
+      /* App icons */
+      .app {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-top: 75px;
+      }
+
+      .app:hover {
+        transform: scale(1.15);
+      }
+
+      .app img {
+        width: 100%;
+        height: 100%;
+      }
+
+      .TitleText {
+        margin-bottom: 50px;
+      }
+
+      .spinner {
+        width: 20px;
+        height: 20px;
+        border: 3px solid #fff;
+        border-top: 3px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 2em;
+      }
+
+      #loading-text {
+        margin-top: 10px;
+        font-size: 1.2em;
+      }
+
+      .OS {
+        margin-top: 15px;
+        opacity: 0.5;
+      }
+      .home {
+        margin-top: 15px;
+      }
+      .skib {
+        margin-bottom: 20px;
+      }
+      .policyheadertext {
+        color: blueviolet;
+      }
+
+      .policymaintext {
+        opacity: 0.4;
+      }
+
+      .policyheadertext1 {
+        color: blueviolet;
+        margin-top: 40px;
+      }
+
+      #loadingScreen {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at center, #111, #000);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        transition: opacity 0.4s ease;
+      }
+
+      .loader-box {
+        text-align: center;
+        color: white;
+        font-family: Arial, sans-serif;
+      }
+
+      .spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid rgba(255, 255, 255, 0.1);
+        border-top: 4px solid #9b59b6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 15px auto;
+        margin-top: 25px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      #loadingMessage {
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+        font-size: 28px;
+        opacity: 0.7;
+        height: auto;
+        font-family: "Grandstander", cursive;
+        margin-bottom: 25px;
+      }
+#bg {
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    overflow: hidden;
+    background: linear-gradient(135deg, #000, rgb(183, 0, 255));
+}
+
+#bg .background-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+      #overlay{
+    position: fixed;
+    inset: 0;
+    z-index: 9999999999;
+    background: black;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+}
+
+#overlay img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#enterBtn{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 12px 24px;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 10000000000;
+}
+/* =========================
+   DARK BACKGROUND OVERLAY
+========================= */
+
+#bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.214);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Keep videos behind the dark overlay */
+.background-video {
+    z-index: 0 !important;
+}
+
+/* Content stays above everything */
+.page {
+    z-index: 3 !important;
+}
+
+/* Stars */
+#starContainer {
+    z-index: 2 !important;
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+}
+
+/* Individual stars */
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: var(--accent1);
+    box-shadow:
+        0 0 4px var(--accent1),
+        0 0 8px var(--accent1);
+}
+#overlay.hide{
+    opacity: 0;
+    pointer-events: none;
+}
+#clickLayer{
+  position:absolute;
+  inset:0;
+  background:transparent;
+  cursor:pointer;
+}
+#overlay{
+  position:fixed;
+  inset:0;
+  z-index:999999;
+  opacity:1;
+  transition:opacity .6s ease;
+}
+
+#introFrame{
+  width:100%;
+  height:100%;
+  border:none;
+}
+
+#overlay.hide{
+  opacity:0;
+  pointer-events:none;
+}
+    </style>
+  </head>
+
+  <body>
+
+    <div id="bg"></div>
+
+<script>
+/* =========================================
+   SHARED BACKGROUND SYSTEM
+   Works with images AND videos
+   ========================================= */
+
+function setBackground(type, value = "") {
+
+    // Save background for every page
+    localStorage.setItem("bgType", type);
+    localStorage.setItem("bgValue", value);
+    localStorage.setItem(
+        "activeBackground",
+        value || type
+    );
+
+    applyBackground();
+}
+
+
+/* =========================================
+   APPLY SAVED BACKGROUND
+   ========================================= */
+
+function applyBackground() {
+
+    const type =
+        localStorage.getItem("bgType") || "default";
+
+    const value =
+        localStorage.getItem("bgValue") || "";
+
+    const bg =
+        document.getElementById("bg");
+
+    if (!bg) return;
+
+
+    /*
+     * Remove an old background video.
+     */
+    const oldVideo =
+        bg.querySelector(".background-video");
+
+    if (oldVideo) {
+        oldVideo.pause();
+        oldVideo.remove();
+    }
+
+
+    /*
+     * Reset background.
+     */
+    bg.style.backgroundImage = "none";
+    bg.style.backgroundColor = "transparent";
+
+
+    /* =========================================
+       DEFAULT
+       ========================================= */
+
+if (type === "default" || !value) {
+
+    const defaultVideo =
+        "/background-imgs/OMORILAB ORIGINAL ANIMATION MEME 3333.mp4";
+
+    const video = document.createElement("video");
+
+    video.className = "background-video";
+
+    video.src = defaultVideo;
+
+    video.autoplay = true;
+    video.loop = true;
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.preload = "auto";
+
+    video.setAttribute("aria-hidden", "true");
+
+    Object.assign(video.style, {
+        position: "absolute",
+        inset: "0",
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        pointerEvents: "none",
+        zIndex: "0",
+        display: "block"
+    });
+
+    bg.appendChild(video);
+
+    video.play().catch(() => {});
+
+    return;
+}
+
+
+    /* =========================================
+       COLOR
+       ========================================= */
+
+    if (type === "color") {
+
+        bg.style.background = value;
+
+        return;
+    }
+
+
+    /* =========================================
+       IMAGE
+       ========================================= */
+
+    if (type === "image") {
+
+        bg.style.background = "none";
+
+        bg.style.backgroundImage =
+            `url("${value.replace(/"/g, '\\"')}")`;
+
+        bg.style.backgroundPosition =
+            "center";
+
+        bg.style.backgroundSize =
+            "cover";
+
+        bg.style.backgroundRepeat =
+            "no-repeat";
+
+        return;
+    }
+
+
+    /* =========================================
+       VIDEO
+       ========================================= */
+
+    if (type === "video") {
+
+        bg.style.background = "black";
+
+
+        const video =
+            document.createElement("video");
+
+        video.className =
+            "background-video";
+
+        video.src = value;
+
+        video.autoplay = true;
+        video.loop = true;
+        video.muted = true;
+        video.defaultMuted = true;
+        video.playsInline = true;
+        video.preload = "auto";
+
+        video.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+
+        /*
+         * Make video cover the entire screen.
+         */
+        video.style.position = "absolute";
+        video.style.left = "0";
+        video.style.top = "0";
+        video.style.width = "100%";
+        video.style.height = "100%";
+
+        video.style.objectFit = "cover";
+
+        video.style.pointerEvents = "none";
+
+        video.style.zIndex = "0";
+
+        video.style.display = "block";
+
+
+        bg.appendChild(video);
+
+
+        /*
+         * Start playback.
+         */
+        video.addEventListener(
+            "loadeddata",
+            () => {
+
+                video.play().catch(
+                    error => {
+                        console.warn(
+                            "Video autoplay failed:",
+                            error
+                        );
+                    }
+                );
+
+            },
+            { once: true }
+        );
+
+
+        /*
+         * Try immediately too.
+         */
+        video.play().catch(() => {});
+
+
+        /*
+         * If the video doesn't exist,
+         * fall back to the normal background.
+         */
+        video.addEventListener(
+            "error",
+            () => {
+
+                console.error(
+                    "Could not load background video:",
+                    value
+                );
+
+                video.remove();
+
+                bg.style.background =
+                    "linear-gradient(135deg, #000, rgb(183, 0, 255))";
+
+            }
+        );
+
+        return;
+    }
+
+
+    /*
+     * Unknown background type.
+     */
+    bg.style.background =
+        "linear-gradient(135deg, #000, rgb(183, 0, 255))";
+}
+
+
+/* =========================================
+   LOAD BACKGROUND WHEN HOME OPENS
+   ========================================= */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        applyBackground();
+
+    }
+);
+
+
+/*
+ * Also apply it on normal load.
+ */
+window.addEventListener(
+    "load",
+    () => {
+
+        applyBackground();
+
+    }
+);
+</script>
+
+    <script>
+      window.addEventListener("load", applyBackground);
+    </script>
+
+    <!-- Stars -->
+    <script>
+      function createStars(color) {
+        document.querySelectorAll(".star").forEach((s) => s.remove());
+        for (let i = 0; i < 150; i++) {
+          let star = document.createElement("div");
+          star.className = "star";
+          star.style.background = color;
+          star.style.top = Math.random() * window.innerHeight + "px";
+          star.style.left = Math.random() * window.innerWidth + "px";
+          let size = Math.random() * 2 + 1;
+          star.style.width = size + "px";
+          star.style.height = size + "px";
+          star.style.animation =
+            "twinkle " + (Math.random() * 3 + 2) + "s infinite ease-in-out";
+          document.body.appendChild(star);
+        }
+      }
+    </script>
+
+
+
+    <!-- Panel -->
+    <div class="panel">
+      <h1 class="skib">Info</h1>
+      <h3 class="OS"> <h5 class="">For help or legal regards please contact eclipsemimihelp@outlook.com</h5></h3>
+      <h5 class="policyheadertext">TERMS OF SERVICE</h5>
+      <h4 class="policymaintextbold">
+        using Aether, you agree to the following terms:
+      </h4>
+
+      <h5 class="policymaintext">
+        This site is provided as-is with no guarantees of uptime or
+        availability.
+      </h5>
+      <h5 class="policymaintext">
+        You are responsible for your own usage and any consequences that arise
+        from it.
+      </h5>
+      <h5 class="policymaintext">
+        We reserve the right to modify, suspend, or discontinue the service at
+        any time.
+      </h5>
+      <h5 class="policymaintext">
+        Do not attempt to exploit, attack, or disrupt the service or its
+        infrastructure.
+      </h5>
+      <h5 class="policymaintext">
+        We may collect basic analytics data to improve the site experience.
+      </h5>
+      <h5 class="policymaintext">
+        Abuse of the platform may result in access being revoked without notice.
+      </h5>
+
+      <!--Seperate-->
+
+      <h5 class="policyheadertext1">PRIVACY POLICY</h5>
+      <h4 class="policymaintextbold">
+        Your privacy matters to us. Here's what we do and don't do:
+      </h4>
+      <h5 class="policymaintext">
+        We do not collect personal information such as names, email addresses,
+        or passwords.
+      </h5>
+      <h5 class="policymaintext">
+        Your preferences (such as themes, cloaking, and settings) are stored
+        locally on your device using browser storage (localStorage).
+      </h5>
+      <h5 class="policymaintext">
+        We do not sell, share, or distribute any user data to third parties.
+      </h5>
+      <h5 class="policymaintext">
+        Third-party services (e.g., game CDNs, proxy tools) may have their own
+        privacy policies.
+      </h5>
+      <h5 class="policymaintext">
+        Some features on Aether (such as games, CDNs, or proxy tools) may rely
+        on third-party services.
+      </h5>
+      <h5 class="policymaintext">
+        You have the option to disable ads through the site’s settings..
+      </h5>
+      <h5 class="policymaintext">
+        Since most data is stored locally, you can clear your browser data at
+        any time to remove saved settings.
+      </h5>
+    
+    </div>
+    <script>
+      // Apply saved settings (theme + cloak)
+      function applySettings() {
+        let theme = localStorage.getItem("theme") || "dark";
+        let accent = localStorage.getItem("accent") || "#9b59b6";
+        let title = localStorage.getItem("cloakTitle");
+        let icon = localStorage.getItem("cloakIcon");
+
+        if (title) document.title = title;
+        if (icon) {
+          document
+            .querySelectorAll('link[rel~="icon"]')
+            .forEach((l) => l.remove());
+          let link = document.createElement("link");
+          link.rel = "icon";
+          link.href = icon;
+          document.head.appendChild(link);
+        }
+
+        if (theme === "light") {
+          document.body.style.background = `linear-gradient(135deg,#ffffff,${accent})`;
+          document.body.style.color = "black";
+          createStars("black");
+        } else {
+          document.body.style.background = `linear-gradient(135deg,black,${accent})`;
+          document.body.style.color = "white";
+          createStars("white");
+        }
+      }
+
+      window.addEventListener("load", applySettings);
+    </script>
+
+    <script>
+      window.addEventListener("beforeunload", function (e) {
+        e.preventDefault();
+        e.returnValue = "";
+      });
+    </script>
+
+    <script>
+      // Disable right-click
+      document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+      // Block common devtools shortcuts
+      document.addEventListener("keydown", (e) => {
+        if (
+          e.key === "F12" ||
+          (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
+          (e.ctrlKey && e.key === "U")
+        ) {
+          e.preventDefault();
+        }
+      });
+    </script>
+    <script>
+      window.addEventListener("load", () => {
+        applyBackground();
+      });
+    </script>
+  <script>
+window.addEventListener("DOMContentLoaded", () => {
+    const overlay = document.getElementById("overlay");
+
+    if (!overlay) return;
+
+    function closeSplash() {
+        overlay.classList.add("hide");
+
+        setTimeout(() => {
+            overlay.remove();
+        }, 600);
+    }
+
+    // Click anywhere on overlay = enter
+    overlay.addEventListener("click", closeSplash);
+});
+</script>
+<!-- Privacy / inactive-tab overlay -->
+<div id="inactiveOverlay"></div>
+
+<style>
+    #inactiveOverlay {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        z-index: 999999999;
+        display: none;
+        pointer-events: none;
+    }
+
+    #inactiveOverlay.active {
+        display: block;
+    }
+</style>
+
+<script>
+    const inactiveOverlay =
+        document.getElementById("inactiveOverlay");
+
+    function updateInactiveOverlay() {
+        if (document.hidden) {
+            inactiveOverlay.classList.add("active");
+        } else {
+            inactiveOverlay.classList.remove("active");
+        }
+    }
+
+    document.addEventListener(
+        "visibilitychange",
+        updateInactiveOverlay
+    );
+
+    window.addEventListener(
+        "blur",
+        () => {
+            inactiveOverlay.classList.add("active");
+        }
+    );
+
+    window.addEventListener(
+        "focus",
+        () => {
+            if (!document.hidden) {
+                inactiveOverlay.classList.remove("active");
+            }
+        }
+    );
+
+    updateInactiveOverlay();
+</script>
+</body>
+</html>

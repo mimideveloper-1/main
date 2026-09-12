@@ -1,0 +1,1667 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Clever</title>
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="https://th.bing.com/th/id/ODF.cCsv-cCt-jkEcwiJYMYj4A?w=32&h=32&qlt=90&pcl=fffffc&o=6&pid=1.2"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&family=Lexend:wght@100..900&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        :root {
+            --accent1: #9b59b6;
+            --accent2: #c084fc;
+
+            --theme-bg1: #000000;
+            --theme-bg2: #b700ff;
+
+            --navbar-bg: rgba(20,20,20,0.7);
+            --navbar-border: rgba(255,255,255,0.1);
+
+            --card-bg: rgba(255,255,255,0.08);
+            --card-hover: rgba(255,255,255,0.13);
+        }
+
+        * {
+            box-sizing: border-box;
+
+            scrollbar-width: thin;
+
+            scrollbar-color:
+                var(--accent1)
+                rgba(0,0,0,0.7);
+        }
+
+        html {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
+        body {
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family:
+                "Grandstander",
+                cursive;
+
+            background: transparent;
+
+            color: white;
+
+            overflow-x: hidden;
+
+            padding-bottom: 100px;
+        }
+
+        #bg {
+            position: fixed;
+
+            inset: 0;
+
+            z-index: -10;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--theme-bg1),
+                    var(--theme-bg2)
+                );
+        }
+
+        #bg::after {
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.214
+                );
+
+            pointer-events: none;
+
+            z-index: 1;
+        }
+
+        #bg .background-video {
+            position: absolute;
+
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            pointer-events: none;
+
+            z-index: 0;
+        }
+
+        .firefly {
+            position: fixed;
+
+            border-radius: 50%;
+
+            pointer-events: none;
+
+            opacity: 0;
+
+            filter: blur(0.3px);
+
+            will-change: transform;
+
+            animation-fill-mode: both;
+
+            z-index: 2;
+        }
+
+        .firefly::after {
+            content: "";
+
+            position: absolute;
+
+            inset: -3px;
+
+            border-radius: 50%;
+
+            background: inherit;
+
+            opacity: 0.25;
+
+            filter: blur(5px);
+        }
+
+        @keyframes fireflyMove {
+
+            0% {
+                transform:
+                    translate(0px, 0px)
+                    scale(0.8);
+
+                opacity: 0;
+            }
+
+            8% {
+                opacity: 0.2;
+            }
+
+            15% {
+                transform:
+                    translate(25px, -18px)
+                    scale(1);
+
+                opacity: 0.6;
+            }
+
+            35% {
+                transform:
+                    translate(60px, -40px)
+                    scale(0.9);
+
+                opacity: 0.85;
+            }
+
+            55% {
+                transform:
+                    translate(95px, -70px)
+                    scale(1.05);
+
+                opacity: 0.55;
+            }
+
+            75% {
+                transform:
+                    translate(130px, -105px)
+                    scale(0.95);
+
+                opacity: 0.75;
+            }
+
+            100% {
+                transform:
+                    translate(170px, -145px)
+                    scale(0.7);
+
+                opacity: 0;
+            }
+
+        }
+
+        .title {
+            text-align: center;
+
+            margin-top: 130px;
+
+            margin-bottom: 10px;
+
+            font-size: 64px;
+
+            font-weight: 700;
+
+            text-shadow:
+                0 0 20px
+                color-mix(
+                    in srgb,
+                    var(--accent1) 30%,
+                    transparent
+                );
+        }
+
+        .subtext {
+            text-align: center;
+
+            opacity: 0.55;
+
+            margin-top: 15px;
+
+            margin-bottom: 45px;
+
+            font-size: 17px;
+        }
+
+        .apps-grid {
+            width: calc(100% - 40px);
+
+            max-width: 1100px;
+
+            margin: 0 auto 80px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(145px, 1fr)
+                );
+
+            gap: 18px;
+
+            justify-content: center;
+        }
+
+        .app {
+            width: 100%;
+
+            min-height: 175px;
+
+            padding: 14px 12px;
+
+            border-radius: 14px;
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.12
+                );
+
+            background:
+                var(--card-bg);
+
+            backdrop-filter:
+                blur(14px);
+
+            -webkit-backdrop-filter:
+                blur(14px);
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: flex-end;
+
+            position: relative;
+
+            overflow: hidden;
+
+            cursor: pointer;
+
+            color: inherit;
+
+            font-family:
+                "Grandstander",
+                cursive;
+
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease;
+
+            outline: none;
+        }
+
+        .app::before {
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        0.06
+                    ),
+                    transparent
+                );
+
+            pointer-events: none;
+        }
+
+        .app:hover {
+            transform:
+                translateY(-5px)
+                scale(1.025);
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--accent1) 10%,
+                    var(--card-hover)
+                );
+
+            box-shadow:
+                0 0 20px
+                color-mix(
+                    in srgb,
+                    var(--accent1) 40%,
+                    transparent
+                );
+        }
+
+        .app:active {
+            transform:
+                translateY(-2px)
+                scale(0.99);
+        }
+
+        .app-icon {
+            width: 62px;
+
+            height: 62px;
+
+            border-radius: 12px;
+
+            object-fit: cover;
+
+            display: block;
+
+            margin:
+                auto
+                auto
+                14px
+                auto;
+
+            border:
+                2px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.18
+                );
+
+            box-shadow:
+                0 6px 18px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.3
+                );
+
+            pointer-events: none;
+
+            transition:
+                transform 0.2s ease;
+
+            position: relative;
+
+            z-index: 1;
+        }
+
+        .app:hover .app-icon {
+            transform:
+                scale(1.06);
+        }
+
+        .app-placeholder {
+            width: 62px;
+
+            height: 62px;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin:
+                auto
+                auto
+                14px
+                auto;
+
+            font-size: 28px;
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--accent1) 10%,
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        0.08
+                    )
+                );
+
+            border:
+                2px solid
+                color-mix(
+                    in srgb,
+                    var(--accent1) 30%,
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        0.18
+                    )
+                );
+
+            box-shadow:
+                0 6px 18px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.3
+                );
+
+            position: relative;
+
+            z-index: 1;
+        }
+
+        .app-name {
+            width: 100%;
+
+            min-height: 38px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            font-size: 17px;
+
+            font-weight: 600;
+
+            line-height: 1.1;
+
+            color: inherit;
+
+            position: relative;
+
+            z-index: 1;
+        }
+
+        .navbar {
+            position: fixed;
+
+            bottom: 15px;
+
+            left: 50%;
+
+            transform:
+                translateX(-50%);
+
+            display: flex;
+
+            gap: 8px;
+
+            padding: 8px 12px;
+
+            border-radius: 18px;
+
+            background:
+                var(--navbar-bg);
+
+            backdrop-filter:
+                blur(12px);
+
+            -webkit-backdrop-filter:
+                blur(12px);
+
+            border:
+                1px solid
+                var(--navbar-border);
+
+            box-shadow: none;
+
+            z-index: 9999;
+        }
+
+        .nav-btn {
+            width: 40px;
+
+            height: 30px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border: none;
+
+            background: transparent;
+
+            cursor: pointer;
+
+            border-radius: 10px;
+
+            transition:
+                0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background:
+                color-mix(
+                    in srgb,
+                    var(--accent1) 15%,
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        0.08
+                    )
+                );
+
+            transform:
+                translateY(-1px);
+        }
+
+        .nav-btn.active {
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--accent1),
+                    var(--accent2)
+                );
+
+            box-shadow:
+                0 0 12px
+                var(--accent1),
+                0 0 20px
+                var(--accent2);
+        }
+
+        .nav-btn-img {
+            width: 18px;
+
+            height: 18px;
+
+            object-fit: contain;
+
+            opacity: 0.85;
+        }
+
+        .nav-btn-game {
+            width: 22px;
+
+            height: 18px;
+
+            object-fit: contain;
+
+            opacity: 0.85;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background:
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.7
+                );
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background:
+                var(--accent1);
+
+            border-radius: 10px;
+
+            border:
+                2px solid
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.4
+                );
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background:
+                var(--accent2);
+        }
+
+        #inactiveOverlay {
+            position: fixed;
+
+            inset: 0;
+
+            background: #000;
+
+            z-index: 999999999;
+
+            display: none;
+
+            pointer-events: none;
+        }
+
+        #inactiveOverlay.active {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+
+            .title {
+                margin-top: 100px;
+
+                font-size: 48px;
+            }
+
+            .subtext {
+                font-size: 15px;
+
+                margin-bottom: 35px;
+            }
+
+            .apps-grid {
+                width:
+                    calc(100% - 24px);
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        minmax(0, 1fr)
+                    );
+
+                gap: 12px;
+            }
+
+            .app {
+                min-height: 155px;
+
+                padding: 12px 8px;
+            }
+
+            .app-icon,
+            .app-placeholder {
+                width: 54px;
+
+                height: 54px;
+
+                border-radius: 10px;
+
+                margin-bottom: 10px;
+            }
+
+            .app-name {
+                font-size: 15px;
+
+                min-height: 34px;
+            }
+
+            .navbar {
+                gap: 5px;
+
+                padding: 7px 9px;
+            }
+
+            .nav-btn {
+                width: 38px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div id="bg"></div>
+
+    <h1 class="title">
+        Resources
+    </h1>
+
+    <div class="subtext">
+        Browse available apps and resources
+    </div>
+
+    <div
+        id="appsGrid"
+        class="apps-grid"
+    ></div>
+
+    <div id="inactiveOverlay"></div>
+
+    <script>
+
+        const themes = {
+
+            default: {
+                accent1: "#9b59b6",
+                accent2: "#c084fc",
+                bg1: "#000000",
+                bg2: "#b700ff"
+            },
+
+            girly: {
+                accent1: "#ff69b4",
+                accent2: "#ffb6d9",
+                bg1: "#3a001f",
+                bg2: "#ff69b4"
+            },
+
+            hacker: {
+                accent1: "#00ff55",
+                accent2: "#00cc44",
+                bg1: "#000800",
+                bg2: "#003b15"
+            },
+
+            ocean: {
+                accent1: "#00aaff",
+                accent2: "#66ddff",
+                bg1: "#00101f",
+                bg2: "#0066aa"
+            },
+
+            forest: {
+                accent1: "#35c759",
+                accent2: "#8bdc8b",
+                bg1: "#031007",
+                bg2: "#176b2c"
+            },
+
+            sunset: {
+                accent1: "#ff512f",
+                accent2: "#dd2476",
+                bg1: "#200000",
+                bg2: "#ff512f"
+            },
+
+            purple: {
+                accent1: "#b026ff",
+                accent2: "#d580ff",
+                bg1: "#100020",
+                bg2: "#6a00a8"
+            },
+
+            cyber: {
+                accent1: "#ff00cc",
+                accent2: "#3333ff",
+                bg1: "#08000f",
+                bg2: "#330066"
+            },
+
+            red: {
+                accent1: "#ff2020",
+                accent2: "#ff6666",
+                bg1: "#120000",
+                bg2: "#8b0000"
+            },
+
+            midnight: {
+                accent1: "#4d6cff",
+                accent2: "#7289ff",
+                bg1: "#020024",
+                bg2: "#090979"
+            },
+
+            ice: {
+                accent1: "#66e6ff",
+                accent2: "#b8f5ff",
+                bg1: "#00151c",
+                bg2: "#006b7a"
+            },
+
+            gold: {
+                accent1: "#ffd700",
+                accent2: "#fff09a",
+                bg1: "#160e00",
+                bg2: "#806000"
+            },
+
+            cherry: {
+                accent1: "#ff1744",
+                accent2: "#ff6685",
+                bg1: "#180006",
+                bg2: "#8b001c"
+            },
+
+            lavender: {
+                accent1: "#c77dff",
+                accent2: "#e0aaff",
+                bg1: "#100818",
+                bg2: "#5a189a"
+            },
+
+            neon: {
+                accent1: "#00ffea",
+                accent2: "#ff00ff",
+                bg1: "#000b12",
+                bg2: "#260026"
+            },
+
+            coffee: {
+                accent1: "#d2691e",
+                accent2: "#f4a460",
+                bg1: "#100804",
+                bg2: "#5c2e0e"
+            },
+
+            emerald: {
+                accent1: "#00c878",
+                accent2: "#63ffb5",
+                bg1: "#00140e",
+                bg2: "#006b43"
+            }
+
+        };
+
+
+        function applyTheme() {
+
+            let themeName =
+                localStorage.getItem(
+                    "selectedTheme"
+                );
+
+            if (
+                !themeName ||
+                !themes[themeName]
+            ) {
+                themeName =
+                    "default";
+            }
+
+            const theme =
+                themes[themeName];
+
+            document.documentElement.style.setProperty(
+                "--accent1",
+                theme.accent1
+            );
+
+            document.documentElement.style.setProperty(
+                "--accent2",
+                theme.accent2
+            );
+
+            document.documentElement.style.setProperty(
+                "--theme-bg1",
+                theme.bg1
+            );
+
+            document.documentElement.style.setProperty(
+                "--theme-bg2",
+                theme.bg2
+            );
+
+            createFireflies(
+                theme.accent2
+            );
+
+        }
+
+
+        function applyBackground() {
+
+            const bg =
+                document.getElementById(
+                    "bg"
+                );
+
+            if (!bg) {
+                return;
+            }
+
+            let type =
+                localStorage.getItem(
+                    "bgType"
+                );
+
+            let value =
+                localStorage.getItem(
+                    "bgValue"
+                );
+
+            let themeName =
+                localStorage.getItem(
+                    "selectedTheme"
+                );
+
+            if (
+                !themeName ||
+                !themes[themeName]
+            ) {
+                themeName =
+                    "default";
+            }
+
+            const theme =
+                themes[themeName];
+
+            const oldVideo =
+                bg.querySelector(
+                    ".background-video"
+                );
+
+            if (oldVideo) {
+
+                oldVideo.pause();
+
+                oldVideo.remove();
+
+            }
+
+            bg.style.backgroundImage =
+                "none";
+
+            bg.style.background =
+                "transparent";
+
+            if (
+                !type ||
+                type === "none" ||
+                type === "default"
+            ) {
+
+                bg.style.background =
+                    `linear-gradient(
+                        135deg,
+                        ${theme.bg1},
+                        ${theme.bg2}
+                    )`;
+
+                return;
+
+            }
+
+            if (type === "color") {
+
+                bg.style.background =
+                    value ||
+                    "#000";
+
+                return;
+
+            }
+
+            if (type === "image") {
+
+                bg.style.backgroundImage =
+                    `url("${value}")`;
+
+                bg.style.backgroundPosition =
+                    "center";
+
+                bg.style.backgroundSize =
+                    "cover";
+
+                bg.style.backgroundRepeat =
+                    "no-repeat";
+
+                return;
+
+            }
+
+            if (type === "video") {
+
+                const video =
+                    document.createElement(
+                        "video"
+                    );
+
+                video.className =
+                    "background-video";
+
+                video.src =
+                    value;
+
+                video.autoplay =
+                    true;
+
+                video.loop =
+                    true;
+
+                video.muted =
+                    true;
+
+                video.defaultMuted =
+                    true;
+
+                video.playsInline =
+                    true;
+
+                video.preload =
+                    "auto";
+
+                video.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+                bg.appendChild(
+                    video
+                );
+
+                video.play().catch(
+                    () => {}
+                );
+
+                video.addEventListener(
+                    "error",
+                    () => {
+
+                        video.remove();
+
+                        bg.style.background =
+                            `linear-gradient(
+                                135deg,
+                                ${theme.bg1},
+                                ${theme.bg2}
+                            )`;
+
+                    },
+                    {
+                        once: true
+                    }
+                );
+
+                return;
+
+            }
+
+            bg.style.background =
+                `linear-gradient(
+                    135deg,
+                    ${theme.bg1},
+                    ${theme.bg2}
+                )`;
+
+        }
+
+
+        function createFireflies(color) {
+
+            document
+                .querySelectorAll(
+                    ".firefly"
+                )
+                .forEach(
+                    firefly =>
+                        firefly.remove()
+                );
+
+            const amount =
+                90;
+
+            for (
+                let i = 0;
+                i < amount;
+                i++
+            ) {
+
+                const firefly =
+                    document.createElement(
+                        "div"
+                    );
+
+                firefly.className =
+                    "firefly";
+
+                const size =
+                    Math.random() *
+                    3 +
+                    1;
+
+                firefly.style.width =
+                    size + "px";
+
+                firefly.style.height =
+                    size + "px";
+
+                firefly.style.background =
+                    color;
+
+                firefly.style.left =
+                    Math.random() *
+                    window.innerWidth +
+                    "px";
+
+                firefly.style.top =
+                    Math.random() *
+                    window.innerHeight +
+                    "px";
+
+                const duration =
+                    (
+                        Math.random() *
+                        8 +
+                        6
+                    ).toFixed(2);
+
+                const startOffset =
+                    -(
+                        Math.random() *
+                        duration
+                    );
+
+                firefly.style.animation =
+                    `fireflyMove
+                    ${duration}s
+                    linear
+                    ${startOffset}s
+                    infinite`;
+
+                document.body.appendChild(
+                    firefly
+                );
+
+            }
+
+        }
+
+
+        function applyCloakSettings() {
+
+            const title =
+                localStorage.getItem(
+                    "cloakTitle"
+                );
+
+            const icon =
+                localStorage.getItem(
+                    "cloakIcon"
+                );
+
+            if (title) {
+
+                document.title =
+                    title;
+
+            }
+
+            if (icon) {
+
+                document
+                    .querySelectorAll(
+                        'link[rel~="icon"]'
+                    )
+                    .forEach(
+                        link =>
+                            link.remove()
+                    );
+
+                const link =
+                    document.createElement(
+                        "link"
+                    );
+
+                link.rel =
+                    "icon";
+
+                link.href =
+                    icon;
+
+                document.head.appendChild(
+                    link
+                );
+
+            }
+
+        }
+
+
+        function applySettings() {
+
+            applyTheme();
+
+            applyBackground();
+
+            applyCloakSettings();
+
+        }
+
+
+        /*
+         * IMPORTANT:
+         * icon is now ONLY the image URL.
+         * The renderer creates the <img>.
+         */
+
+const apps = [
+    {
+        id: "1",
+        name: "Movies",
+        icon: "images/movies.jpg",
+        url: "https://tubitv.com/"
+    },
+    {
+        id: "2",
+        name: "Music",
+        icon: "images/music.png",
+        url: "https://listenfree.in/"
+    },
+    {
+        id: "3",
+        name: "Chat GPT",
+        icon: "images/chatgpt.png",
+        url: "https://chatgpt.com/"
+    },
+    {
+        id: "4",
+        name: "Roblox",
+        icon: "images/roblox.png",
+        url: "https://roblox.com/"
+    },
+    {
+        id: "5",
+        name: "Discord",
+        icon: "images/discord.png",
+        url: "https://discord.com/"
+    },
+    {
+        id: "6",
+        name: "Twitch",
+        icon: "images/twitch.png",
+        url: "https://twitch.tv/"
+    },
+
+            {
+                id: "7",
+                name: "7",
+                icon: "",
+                url: ""
+            },
+
+            {
+                id: "8",
+                name: "8",
+                icon: "",
+                url: ""
+            },
+
+            {
+                id: "9",
+                name: "9",
+                icon: "",
+                url: ""
+            },
+
+            {
+                id: "10",
+                name: "10",
+                icon: "",
+                url: ""
+            }
+
+        ];
+
+
+        function openApp(appId) {
+
+            const app =
+                apps.find(
+                    item =>
+                        item.id === appId
+                );
+
+            if (!app) {
+                return;
+            }
+
+            if (!app.url) {
+                return;
+            }
+
+            sessionStorage.setItem(
+                "frog_proxy_target",
+                app.url
+            );
+
+            window.location.href =
+                "b.html";
+
+        }
+
+
+        function createFallbackIcon(
+            button
+        ) {
+
+            const placeholder =
+                document.createElement(
+                    "div"
+                );
+
+            placeholder.className =
+                "app-placeholder";
+
+            placeholder.textContent =
+                "📱";
+
+            button.insertBefore(
+                placeholder,
+                button.querySelector(
+                    ".app-name"
+                )
+            );
+
+        }
+
+
+        function loadApps() {
+
+            const grid =
+                document.getElementById(
+                    "appsGrid"
+                );
+
+            grid.innerHTML =
+                "";
+
+            apps.forEach(
+                app => {
+
+                    const button =
+                        document.createElement(
+                            "button"
+                        );
+
+                    button.className =
+                        "app";
+
+                    button.type =
+                        "button";
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+                            openApp(
+                                app.id
+                            );
+                        }
+                    );
+
+
+                    const name =
+                        document.createElement(
+                            "div"
+                        );
+
+                    name.className =
+                        "app-name";
+
+                    name.textContent =
+                        app.name;
+
+
+                    /*
+                     * Create a REAL img element
+                     * from the URL stored in app.icon.
+                     */
+
+                    if (app.icon) {
+
+                        const icon =
+                            document.createElement(
+                                "img"
+                            );
+
+                        icon.className =
+                            "app-icon";
+
+                        icon.src =
+                            app.icon;
+
+                        icon.alt =
+                            app.name;
+
+                        icon.loading =
+                            "lazy";
+
+                        icon.referrerPolicy =
+                            "no-referrer";
+
+
+                        icon.addEventListener(
+                            "error",
+                            () => {
+
+                                icon.remove();
+
+                                createFallbackIcon(
+                                    button
+                                );
+
+                            },
+                            {
+                                once: true
+                            }
+                        );
+
+
+                        button.appendChild(
+                            icon
+                        );
+
+                    }
+
+                    else {
+
+                        createFallbackIcon(
+                            button
+                        );
+
+                    }
+
+
+                    button.appendChild(
+                        name
+                    );
+
+
+                    grid.appendChild(
+                        button
+                    );
+
+                }
+            );
+
+        }
+
+
+        window.addEventListener(
+            "storage",
+            function(event) {
+
+                if (
+                    event.key ===
+                    "selectedTheme"
+                ) {
+
+                    applyTheme();
+
+                    applyBackground();
+
+                }
+
+                if (
+                    event.key === "bgType" ||
+                    event.key === "bgValue"
+                ) {
+
+                    applyBackground();
+
+                }
+
+                if (
+                    event.key === "cloakTitle" ||
+                    event.key === "cloakIcon"
+                ) {
+
+                    applyCloakSettings();
+
+                }
+
+            }
+        );
+
+
+        const inactiveOverlay =
+            document.getElementById(
+                "inactiveOverlay"
+            );
+
+
+        function updateInactiveOverlay() {
+
+            if (document.hidden) {
+
+                inactiveOverlay.classList.add(
+                    "active"
+                );
+
+            }
+
+            else {
+
+                inactiveOverlay.classList.remove(
+                    "active"
+                );
+
+            }
+
+        }
+
+
+        document.addEventListener(
+            "visibilitychange",
+            updateInactiveOverlay
+        );
+
+
+        window.addEventListener(
+            "blur",
+            () => {
+
+                inactiveOverlay.classList.add(
+                    "active"
+                );
+
+            }
+        );
+
+
+        window.addEventListener(
+            "focus",
+            () => {
+
+                if (!document.hidden) {
+
+                    inactiveOverlay.classList.remove(
+                        "active"
+                    );
+
+                }
+
+            }
+        );
+
+
+        window.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                applySettings();
+
+                loadApps();
+
+                updateInactiveOverlay();
+
+            }
+        );
+
+
+        let resizeTimeout;
+
+
+        window.addEventListener(
+            "resize",
+            () => {
+
+                clearTimeout(
+                    resizeTimeout
+                );
+
+                resizeTimeout =
+                    setTimeout(
+                        () => {
+
+                            let themeName =
+                                localStorage.getItem(
+                                    "selectedTheme"
+                                );
+
+                            if (
+                                !themeName ||
+                                !themes[themeName]
+                            ) {
+
+                                themeName =
+                                    "default";
+
+                            }
+
+                            createFireflies(
+                                themes[
+                                    themeName
+                                ].accent2
+                            );
+
+                        },
+                        300
+                    );
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>

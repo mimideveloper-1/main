@@ -1,0 +1,1643 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Browser</title>
+
+    <meta
+        name="description"
+        content="Browser - proxied web browsing powered by Scramjet.">
+
+    <meta
+        name="theme-color"
+        content="#000000">
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="https://th.bing.com/th/id/ODF.cCsv-cCt-jkEcwiJYMYj4A?w=32&h=32&qlt=90&pcl=fffffc&o=6&pid=1.2">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&family=Jersey+10&family=Lexend:wght@100..900&display=swap"
+        rel="stylesheet">
+
+    <!-- =====================================================
+         SCRAMJET + BAREMUX LOADERS
+    ====================================================== -->
+    <script src="/register-sw.js"></script>
+    <script src="/scram/scramjet.all.js"></script>
+    <script src="/baremux/index.js"></script>
+
+    <style>
+
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        html,
+        body {
+
+            margin: 0;
+            padding: 0;
+
+            width: 100%;
+            height: 100%;
+
+        }
+
+
+        /* =========================================================
+           VARIABLES
+        ========================================================= */
+
+        :root {
+
+            --accent1: #9b59b6;
+            --accent2: #c084fc;
+
+            --theme-bg1: #000000;
+            --theme-bg2: #b700ff;
+
+        }
+
+
+        /* =========================================================
+           BODY
+        ========================================================= */
+
+        body {
+
+            font-family:
+                "Lexend",
+                sans-serif;
+
+            overflow: hidden;
+
+            color: white;
+
+            cursor:
+                url("/cursor/Arrow.cur"),
+                auto;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--theme-bg1),
+                    var(--theme-bg2)
+                );
+
+        }
+
+
+        /* =========================================================
+           BACKGROUND
+        ========================================================= */
+
+        #bg {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: -10;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--theme-bg1),
+                    var(--theme-bg2)
+                );
+
+        }
+
+
+        #bg::after {
+
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                rgba(0, 0, 0, 0.214);
+
+            pointer-events: none;
+
+            z-index: 2;
+
+        }
+
+
+        /* =========================================================
+           BROWSER LAYOUT
+        ========================================================= */
+
+        #browserShell {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+            padding:
+                14px
+                14px
+                14px
+                120px; /* clear the navbar and its glow */
+
+            box-sizing: border-box;
+
+            z-index: 5;
+
+        }
+
+
+        /* =========================================================
+           TOOLBAR
+        ========================================================= */
+
+        .browser-toolbar {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding:
+                8px
+                10px;
+
+            border-radius: 16px;
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--accent1) 14%,
+                    rgba(10, 10, 14, 0.78)
+                );
+
+            border:
+                1px solid
+                color-mix(
+                    in srgb,
+                    var(--accent1) 30%,
+                    rgba(255,255,255,0.10)
+                );
+
+            backdrop-filter:
+                blur(18px);
+
+            -webkit-backdrop-filter:
+                blur(18px);
+
+            box-shadow:
+                0 14px 40px rgba(0,0,0,0.28),
+                0 0 24px color-mix(in srgb, var(--accent1) 16%, transparent);
+
+            flex: 0 0 auto;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .nav-btn {
+
+            width: 40px;
+
+            height: 40px;
+
+            flex: 0 0 auto;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border: none;
+
+            border-radius: 11px;
+
+            background:
+                rgba(255,255,255,0.05);
+
+            color:
+                rgba(255,255,255,0.78);
+
+            cursor:
+                url("/cursor/Hand.cur"),
+                pointer;
+
+            transition:
+                0.18s ease;
+
+        }
+
+
+        .nav-btn:hover:not(:disabled) {
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--accent1) 26%,
+                    rgba(255,255,255,0.08)
+                );
+
+            color: white;
+
+            transform: translateY(-1px);
+
+        }
+
+
+        .nav-btn:disabled {
+
+            opacity: 0.35;
+
+            cursor: default;
+
+        }
+
+
+        .nav-btn svg {
+
+            width: 19px;
+
+            height: 19px;
+
+            stroke: currentColor;
+
+            fill: none;
+
+            stroke-width: 1.9;
+
+            stroke-linecap: round;
+
+            stroke-linejoin: round;
+
+        }
+
+
+        /* =========================================================
+           ADDRESS BAR
+        ========================================================= */
+
+        .address-wrap {
+
+            flex: 1 1 auto;
+
+            min-width: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            height: 40px;
+
+            padding:
+                0
+                6px
+                0
+                14px;
+
+            border-radius: 11px;
+
+            background:
+                rgba(0,0,0,0.35);
+
+            border:
+                1px solid
+                color-mix(
+                    in srgb,
+                    var(--accent1) 26%,
+                    rgba(255,255,255,0.10)
+                );
+
+            transition:
+                0.2s ease;
+
+        }
+
+
+        .address-wrap:focus-within {
+
+            border-color: var(--accent2);
+
+            box-shadow:
+                0 0 0 3px color-mix(in srgb, var(--accent1) 18%, transparent),
+                0 0 18px color-mix(in srgb, var(--accent1) 22%, transparent);
+
+        }
+
+
+        .address-lock {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            width: 22px;
+
+            height: 22px;
+
+            margin-right: 10px;
+
+            color: var(--accent2);
+
+            flex: 0 0 auto;
+
+            opacity: 0.75;
+
+        }
+
+
+        .address-lock svg {
+
+            width: 14px;
+
+            height: 14px;
+
+            stroke: currentColor;
+
+            fill: none;
+
+            stroke-width: 1.9;
+
+            stroke-linecap: round;
+
+            stroke-linejoin: round;
+
+        }
+
+
+        .address-input {
+
+            flex: 1 1 auto;
+
+            min-width: 0;
+
+            border: 0;
+
+            outline: 0;
+
+            background: transparent;
+
+            color: white;
+
+            font-family:
+                "Lexend",
+                sans-serif;
+
+            font-size: 14px;
+
+            padding: 0;
+
+        }
+
+
+        .address-input::placeholder {
+
+            color: rgba(255,255,255,0.42);
+
+        }
+
+
+        .go-btn {
+
+            width: 34px;
+
+            height: 30px;
+
+            flex: 0 0 auto;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background: transparent;
+
+            color: rgba(255,255,255,0.7);
+
+            cursor: url("/cursor/Hand.cur"), pointer;
+
+            transition: 0.18s ease;
+
+        }
+
+
+        .go-btn:hover {
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--accent1) 22%,
+                    transparent
+                );
+
+            color: white;
+
+        }
+
+
+        .go-btn svg {
+
+            width: 17px;
+
+            height: 17px;
+
+            stroke: currentColor;
+
+            fill: none;
+
+            stroke-width: 1.9;
+
+            stroke-linecap: round;
+
+            stroke-linejoin: round;
+
+        }
+
+
+        /* =========================================================
+           STATUS / HINT ROW
+        ========================================================= */
+
+        .browser-status {
+
+            min-height: 16px;
+
+            margin:
+                0
+                4px
+                8px;
+
+            font-family: "Jersey 10", monospace;
+
+            font-size: 15px;
+
+            color: rgba(255,255,255,0.42);
+
+            letter-spacing: 0.5px;
+
+            flex: 0 0 auto;
+
+        }
+
+
+        /* =========================================================
+           SCRAMJET VIEWPORT
+        ========================================================= */
+
+        .browser-view {
+
+            flex: 1 1 auto;
+
+            position: relative;
+
+            border-radius: 16px;
+
+            overflow: hidden;
+
+            background: #000;
+
+            border:
+                1px solid
+                color-mix(
+                    in srgb,
+                    var(--accent1) 24%,
+                    rgba(255,255,255,0.10)
+                );
+
+            box-shadow:
+                0 18px 50px rgba(0,0,0,0.35),
+                0 0 30px color-mix(in srgb, var(--accent1) 14%, transparent);
+
+        }
+
+
+        #sjContainer {
+
+            position: absolute;
+
+            inset: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            display: block;
+
+        }
+
+
+        #sjContainer iframe {
+
+            width: 100%;
+
+            height: 100%;
+
+            border: none;
+
+            display: block;
+
+        }
+
+
+        .browser-view .empty-hint {
+
+            position: absolute;
+
+            inset: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            flex-direction: column;
+
+            gap: 10px;
+
+            color: rgba(255,255,255,0.4);
+
+            font-family: "Jersey 10", monospace;
+
+            font-size: 22px;
+
+            letter-spacing: 1px;
+
+            text-align: center;
+
+            padding: 20px;
+
+        }
+
+
+        /* =========================================================
+           ARCTIC STYLE NAVBAR
+        ========================================================= */
+
+        .navbar {
+
+            position: fixed;
+
+            top: 50%;
+
+            left: 0;
+
+            height: 1000px;
+
+            transform:
+                translateY(-50%);
+
+            width: 82px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding:
+                12px
+                8px;
+
+            box-sizing: border-box;
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--accent1) 18%,
+                    rgba(10, 10, 10, 0.82)
+                );
+
+            backdrop-filter:
+                blur(16px);
+
+            -webkit-backdrop-filter:
+                blur(16px);
+
+            border:
+                1px solid
+                color-mix(
+                    in srgb,
+                    var(--accent1) 30%,
+                    rgba(255,255,255,0.1)
+                );
+
+            box-shadow:
+                0 0 30px
+                color-mix(
+                    in srgb,
+                    var(--accent1) 30%,
+                    transparent
+                ),
+                inset 0 0 15px
+                rgba(255,255,255,0.04);
+
+            z-index: 99999;
+
+            color: white;
+
+            user-select: none;
+
+            overflow: visible;
+
+            pointer-events: auto;
+
+        }
+
+
+        .arctic-arctic-item {
+
+            width: 66px;
+
+            min-height: 58px;
+
+            padding:
+                8px
+                4px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 4px;
+
+            border: none;
+
+            border-radius: 15px;
+
+            background: transparent;
+
+            color:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.68
+                );
+
+            font-family:
+                "Lexend",
+                sans-serif;
+
+            cursor:
+                url("/cursor/Hand.cur"),
+                pointer;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+
+        }
+
+
+        .arctic-arctic-item svg {
+
+            width: 21px;
+
+            height: 21px;
+
+            stroke:
+                currentColor;
+
+            fill:
+                none;
+
+            stroke-width:
+                1.7;
+
+            stroke-linecap:
+                round;
+
+            stroke-linejoin:
+                round;
+
+            transition:
+                0.2s ease;
+
+        }
+
+
+        .arctic-arctic-label {
+
+            font-size: 9px;
+
+            font-weight: 500;
+
+            line-height: 1;
+
+            white-space: nowrap;
+
+            margin-top: 8px;
+
+        }
+
+
+        .arctic-arctic-item:hover {
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--accent1) 18%,
+                    rgba(255,255,255,0.06)
+                );
+
+            color: white;
+
+            transform:
+                translateY(-2px);
+
+        }
+
+
+        .arctic-arctic-item.is-active {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    color-mix(
+                        in srgb,
+                        var(--accent1) 15%,
+                        transparent
+                    ),
+                    color-mix(
+                        in srgb,
+                        var(--accent2) 15%,
+                        transparent
+                    )
+                );
+
+            color: white;
+
+        }
+
+
+        .nav-separator {
+
+            width: 42px;
+
+            height: 1px;
+
+            margin:
+                3px
+                0;
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--accent1) 30%,
+                    rgba(255,255,255,0.1)
+                );
+
+        }
+
+
+        /* =========================================================
+           MOBILE
+        ========================================================= */
+
+        @media (max-width: 700px) {
+
+            #browserShell {
+
+                padding:
+                    10px
+                10px
+                10px
+                120px;
+
+            }
+
+
+            .navbar {
+
+                top: 50%;
+                left: 8px;
+                bottom: auto;
+
+                transform:
+                    translateY(-50%);
+
+                width: 72px;
+
+                max-width: none;
+
+                flex-direction: column;
+
+                padding:
+                    10px 5px;
+
+                gap: 6px;
+
+                overflow: visible;
+
+            }
+
+
+            .arctic-arctic-item {
+
+                width: 48px;
+
+                min-width: 48px;
+
+                min-height: 46px;
+
+                padding:
+                    6px
+                    2px;
+
+            }
+
+
+            .arctic-arctic-item svg {
+
+                width: 19px;
+
+                height: 19px;
+
+            }
+
+
+            .arctic-arctic-label {
+
+                font-size: 7px;
+
+            }
+
+
+            .browser-toolbar {
+
+                padding: 6px;
+
+                gap: 6px;
+
+            }
+
+
+            .nav-btn {
+
+                width: 36px;
+
+                height: 36px;
+
+            }
+
+
+            .address-wrap {
+
+                height: 36px;
+
+                padding-left: 10px;
+
+            }
+
+
+            .address-input {
+
+                font-size: 13px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- BACKGROUND -->
+
+    <div id="bg"></div>
+
+
+    <!-- =====================================================
+         BROWSER SHELL
+    ====================================================== -->
+
+    <div id="browserShell">
+
+        <!-- TOOLBAR -->
+
+        <div class="browser-toolbar">
+
+            <button
+                type="button"
+                class="nav-btn"
+                id="btnBack"
+                title="Back"
+                aria-label="Back">
+
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+
+            </button>
+
+            <button
+                type="button"
+                class="nav-btn"
+                id="btnForward"
+                title="Forward"
+                aria-label="Forward">
+
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+
+            </button>
+
+            <button
+                type="button"
+                class="nav-btn"
+                id="btnReload"
+                title="Reload"
+                aria-label="Reload">
+
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.5 12a8.5 8.5 0 1 1-2.49-6.01"></path><path d="M20.5 3.5v5.5h-5.5"></path></svg>
+            </button>
+
+            <div class="address-wrap">
+
+                <span class="address-lock" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+                        <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                    </svg>
+                </span>
+
+                <input
+                    class="address-input"
+                    id="addressInput"
+                    type="text"
+                    placeholder="Search or enter a URL"
+                    autocomplete="off"
+                    spellcheck="false"
+                    aria-label="Address bar">
+
+                <button
+                    type="button"
+                    class="go-btn"
+                    id="btnGo"
+                    title="Go"
+                    aria-label="Go">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 12h13"></path>
+                        <path d="M12.5 6l6 6-6 6"></path>
+                    </svg>
+
+                </button>
+
+            </div>
+
+            <button
+                type="button"
+                class="nav-btn"
+                id="btnHome"
+                title="Search Home"
+                aria-label="Home">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
+                    <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                </svg>
+
+            </button>
+
+        </div>
+
+        <div class="browser-status" id="browserStatus">
+            ready
+        </div>
+
+        <!-- VIEWPORT -->
+
+        <div class="browser-view">
+
+            <div id="sjContainer">
+
+                <div class="empty-hint" id="emptyHint">
+                    enter a URL or search above
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         ARCTIC STYLE NAVBAR
+    ====================================================== -->
+
+    <nav
+        class="navbar"
+        aria-label="Main Navigation">
+
+
+        <!-- HOME -->
+
+        <a href="home.html">
+
+            <svg class="wordmark-mark" viewBox="0 0 64 64" fill="none" aria-hidden="true" style="width:42px;height:42px;">
+                <circle cx="32" cy="32" r="27" stroke="var(--accent1)" stroke-width="2.5"></circle>
+                <path d="M32 12v40M12 32h40M18 18l28 28M46 18L18 46"
+                      stroke="var(--accent2)" stroke-width="2" stroke-linecap="round"></path>
+                <circle cx="32" cy="32" r="8" stroke="var(--accent1)" stroke-width="2.5"></circle>
+            </svg>
+
+        </a>
+
+
+        <button
+            type="button"
+            class="arctic-arctic-item"
+            onclick="window.location.href='home.html'">
+
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24">
+
+                <path
+                    d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8">
+                </path>
+
+                <path
+                    d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z">
+                </path>
+
+            </svg>
+
+            <span class="arctic-arctic-label">
+                Home
+            </span>
+
+        </button>
+
+
+        <!-- BROWSER (active) -->
+
+        <button
+            type="button"
+            class="arctic-arctic-item is-active"
+            aria-current="page">
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                <path d="M2 12h20"></path>
+            </svg>
+
+            <span class="arctic-arctic-label">
+                Browser
+            </span>
+
+        </button>
+
+
+        <!-- GAMES -->
+
+        <button
+            type="button"
+            class="arctic-arctic-item"
+            onclick="window.location.href='g.html'">
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" x2="10" y1="11" y2="11"></line><line x1="8" x2="8" y1="9" y2="13"></line><line x1="15" x2="15.01" y1="12" y2="12"></line><line x1="18" x2="18.01" y1="10" y2="10"></line><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"></path></svg>
+
+            <span class="arctic-arctic-label">
+                G@mes
+            </span>
+
+        </button>
+
+
+        <!-- APPS -->
+
+        <button
+            type="button"
+            class="arctic-arctic-item"
+            onclick="window.location.href='a.html'">
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"></rect><rect x="13" y="4" width="7" height="7" rx="1.6"></rect><rect x="4" y="13" width="7" height="7" rx="1.6"></rect><rect x="13" y="13" width="7" height="7" rx="1.6"></rect></svg>
+
+            <span class="arctic-arctic-label">
+                Apps
+            </span>
+
+        </button>
+
+
+        <!-- AI -->
+
+        <button
+            type="button"
+            class="arctic-arctic-item"
+            onclick="window.location.href='ai.html'">
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.94 14.06A2 2 0 0 0 8.5 12.62l-5.14-1.32a.5.5 0 0 1 0-.96L8.5 9.02A2 2 0 0 0 9.94 7.58l1.32-5.14a.5.5 0 0 1 .96 0l1.32 5.14a2 2 0 0 0 1.44 1.44l5.14 1.32a.5.5 0 0 1 0 .96l-5.14 1.32a2 2 0 0 0-1.44 1.44l-1.32 5.14a.5.5 0 0 1-.96 0z"></path><path d="M20 3v4M22 5h-4M4 17v2M5 18H3"></path></svg>
+
+            <span class="arctic-arctic-label">
+                AI
+            </span>
+
+        </button>
+
+
+        <!-- CHAT -->
+
+        <button
+            type="button"
+            class="arctic-arctic-item"
+            onclick="window.location.href='chat.html'">
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"></path><path d="M8 12h.01M12 12h.01M16 12h.01"></path></svg>
+
+            <span class="arctic-arctic-label">
+                Chat
+            </span>
+
+        </button>
+
+
+        <!-- SETTINGS -->
+
+        <button
+            type="button"
+            class="arctic-arctic-item"
+            onclick="window.location.href='st.html'">
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"></path><circle cx="12" cy="12" r="3"></circle></svg>
+
+            <span class="arctic-arctic-label">
+                Settings
+            </span>
+
+        </button>
+
+    </nav>
+
+
+    <script>
+
+
+        /* =========================================================
+           ELEMENT REFS
+        ========================================================= */
+
+        const sjContainer =
+            document.getElementById("sjContainer");
+
+        const emptyHint =
+            document.getElementById("emptyHint");
+
+        const addressInput =
+            document.getElementById("addressInput");
+
+        const browserStatus =
+            document.getElementById("browserStatus");
+
+        const btnBack =
+            document.getElementById("btnBack");
+
+        const btnForward =
+            document.getElementById("btnForward");
+
+        const btnReload =
+            document.getElementById("btnReload");
+
+        const btnGo =
+            document.getElementById("btnGo");
+
+        const btnHome =
+            document.getElementById("btnHome");
+
+
+        function getDefaultSearchUrl() {
+
+            const searchEngine = localStorage.getItem("searchEngine");
+
+            return searchEngine === "brave"
+                ? "https://search.brave.com/"
+                : "https://duckduckgo.com/";
+
+        }
+
+
+        /* =========================================================
+           THEME (read from localStorage, same keys as home.html)
+        ========================================================= */
+
+        const themes = {
+
+            default:   { accent1: "#9b59b6", accent2: "#c084fc", bg1: "#000000", bg2: "#b700ff" },
+            girly:     { accent1: "#ff69b4", accent2: "#ffb6d9", bg1: "#3a001f", bg2: "#ff69b4" },
+            hacker:    { accent1: "#00ff55", accent2: "#00cc44", bg1: "#000800", bg2: "#003b15" },
+            ocean:     { accent1: "#00aaff", accent2: "#66ddff", bg1: "#00101f", bg2: "#0066aa" },
+            forest:    { accent1: "#35c759", accent2: "#8bdc8b", bg1: "#031007", bg2: "#176b2c" },
+            sunset:    { accent1: "#ff512f", accent2: "#dd2476", bg1: "#200000", bg2: "#ff512f" },
+            purple:    { accent1: "#b026ff", accent2: "#d580ff", bg1: "#100020", bg2: "#6a00a8" },
+            cyber:     { accent1: "#ff00cc", accent2: "#3333ff", bg1: "#08000f", bg2: "#330066" },
+            red:       { accent1: "#ff2020", accent2: "#ff6666", bg1: "#120000", bg2: "#8b0000" },
+            midnight:  { accent1: "#4d6cff", accent2: "#7289ff", bg1: "#020024", bg2: "#090979" },
+            ice:       { accent1: "#66e6ff", accent2: "#b8f5ff", bg1: "#00151c", bg2: "#006b7a" },
+            gold:      { accent1: "#ffd700", accent2: "#fff09a", bg1: "#160e00", bg2: "#806000" },
+            cherry:    { accent1: "#ff1744", accent2: "#ff6685", bg1: "#180006", bg2: "#8b001c" },
+            lavender:  { accent1: "#c77dff", accent2: "#e0aaff", bg1: "#100818", bg2: "#5a189a" },
+            neon:      { accent1: "#00ffea", accent2: "#ff00ff", bg1: "#000b12", bg2: "#260026" },
+            coffee:    { accent1: "#d2691e", accent2: "#f4a460", bg1: "#100804", bg2: "#5c2e0e" },
+            emerald:   { accent1: "#00c878", accent2: "#63ffb5", bg1: "#00140e", bg2: "#006b43" }
+
+        };
+
+
+        function applyTheme() {
+
+            let themeName =
+                localStorage.getItem("selectedTheme");
+
+            if (!themeName || !themes[themeName]) {
+                themeName = "default";
+            }
+
+            const theme = themes[themeName];
+            const root = document.documentElement.style;
+
+            root.setProperty("--accent1", theme.accent1);
+            root.setProperty("--accent2", theme.accent2);
+            root.setProperty("--theme-bg1", theme.bg1);
+            root.setProperty("--theme-bg2", theme.bg2);
+
+            const metaTheme =
+                document.querySelector('meta[name="theme-color"]');
+
+            if (metaTheme) {
+                metaTheme.content = theme.bg1;
+            }
+
+        }
+
+
+        /* =========================================================
+           SCRAMJET BOOTSTRAP
+        ========================================================= */
+
+        let sjController = null;
+        let sjConnection = null;
+
+        function bootScramjet() {
+
+            if (typeof $scramjetLoadController !== "function") {
+
+                console.warn(
+                    "Scramjet loader not found. " +
+                    "Check that /scram/scramjet.all.js is served."
+                );
+
+                return null;
+
+            }
+
+            try {
+
+                const { ScramjetController } =
+                    $scramjetLoadController();
+
+                const controller = new ScramjetController({
+
+                    files: {
+                        wasm: "/scram/scramjet.wasm.wasm",
+                        all:  "/scram/scramjet.all.js",
+                        sync: "/scram/scramjet.sync.js",
+                    },
+
+                });
+
+                controller.init();
+
+                sjConnection =
+                    new BareMux.BareMuxConnection(
+                        "/baremux/worker.js"
+                    );
+
+                return controller;
+
+            }
+
+            catch (err) {
+
+                console.error("Failed to boot Scramjet:", err);
+                return null;
+
+            }
+
+        }
+
+
+        async function ensureScramjetReady() {
+
+            /* Register the service worker once */
+            if (typeof registerSW === "function") {
+
+                try {
+                    await registerSW();
+                }
+                catch (err) {
+                    console.warn("SW registration warning:", err);
+                }
+
+            }
+
+            /* Configure BareMux transport if needed */
+            if (sjConnection) {
+
+                const wispUrl =
+                    (location.protocol === "https:" ? "wss" : "ws") +
+                    "://" +
+                    location.host +
+                    "/wisp/";
+
+                try {
+
+                    const current =
+                        await sjConnection.getTransport();
+
+                    if (current !== "/libcurl/index.mjs") {
+
+                        await sjConnection.setTransport(
+                            "/libcurl/index.mjs",
+                            [{ websocket: wispUrl }]
+                        );
+
+                    }
+
+                }
+                catch (err) {
+                    console.warn("Transport setup warning:", err);
+                }
+
+            }
+
+        }
+
+
+        /* =========================================================
+           NAVIGATE THROUGH SCRAMJET
+        ========================================================= */
+
+        async function navigateTo(targetUrl) {
+
+            if (!targetUrl) return;
+
+            if (!sjController) {
+
+                sjController = bootScramjet();
+
+                if (!sjController) {
+                    setStatus("scramjet failed to load");
+                    return;
+                }
+
+            }
+
+            setStatus("loading through scramjet…");
+
+            /* Remove the placeholder hint */
+            if (emptyHint && emptyHint.parentNode) {
+                emptyHint.remove();
+            }
+
+            /* Clear previous frame */
+            const oldFrame =
+                sjContainer.querySelector("iframe");
+
+            if (oldFrame) {
+                oldFrame.remove();
+            }
+
+            try {
+
+                await ensureScramjetReady();
+
+                const frame = sjController.createFrame();
+
+                sjContainer.appendChild(frame.frame);
+
+                frame.go(targetUrl);
+
+                addressInput.value = targetUrl;
+
+                setStatus("loaded: " + targetUrl);
+
+            }
+
+            catch (err) {
+
+                console.error(err);
+                setStatus("failed: " + err.message);
+
+            }
+
+        }
+
+
+        function setStatus(text) {
+
+            if (browserStatus) {
+                browserStatus.textContent = text;
+            }
+
+        }
+
+
+        /* =========================================================
+           URL / QUERY PARSING
+        ========================================================= */
+
+        function parseInput(value) {
+
+            value = value.trim();
+
+            if (!value) return null;
+
+            const looksLikeUrl =
+                /^(https?:\/\/|localhost[:/]|[\w.-]+\.[a-z]{2,})/i
+                .test(value);
+
+            if (looksLikeUrl) {
+
+                return /^https?:\/\//i.test(value)
+                    ? value
+                    : "https://" + value;
+
+            }
+
+            const searchEngine =
+                localStorage.getItem("searchEngine");
+
+            const baseUrl =
+                searchEngine === "brave"
+                    ? "https://search.brave.com/search?q="
+                    : "https://duckduckgo.com/?q=";
+
+            return baseUrl + encodeURIComponent(value);
+
+        }
+
+
+        /* =========================================================
+           TOOLBAR EVENTS
+        ========================================================= */
+
+        addressInput.addEventListener("keydown", (e) => {
+
+            if (e.key === "Enter") {
+
+                e.preventDefault();
+
+                const target = parseInput(addressInput.value);
+
+                if (target) navigateTo(target);
+
+            }
+
+        });
+
+
+        btnGo.addEventListener("click", () => {
+
+            const target = parseInput(addressInput.value);
+
+            if (target) navigateTo(target);
+
+        });
+
+
+        btnHome.addEventListener("click", () => {
+
+            navigateTo(getDefaultSearchUrl());
+
+        });
+
+
+        btnReload.addEventListener("click", () => {
+
+            const target = parseInput(addressInput.value) || getDefaultSearchUrl();
+
+            navigateTo(target);
+
+        });
+
+
+        btnBack.addEventListener("click", () => {
+
+            try {
+                if (sjController && sjController.frames) {
+                    /* Not all scramjet versions expose history —
+                       fall back to the address bar value. */
+                }
+                history.back();
+            }
+            catch (err) {
+                console.warn(err);
+            }
+
+        });
+
+
+        btnForward.addEventListener("click", () => {
+
+            try {
+                history.forward();
+            }
+            catch (err) {
+                console.warn(err);
+            }
+
+        });
+
+
+        /* =========================================================
+           STORAGE LISTENER (live theme updates)
+        ========================================================= */
+
+        window.addEventListener("storage", (event) => {
+
+            if (
+                event.key === "selectedTheme" ||
+                event.key === "bgType" ||
+                event.key === "bgValue" ||
+                event.key === "activeBackground"
+            ) {
+                applyTheme();
+            }
+
+        });
+
+
+        /* =========================================================
+           START
+        ========================================================= */
+
+        applyTheme();
+
+        /* Let home.html hand searches to this browser page. */
+        const requestedTarget =
+            new URLSearchParams(location.search).get("target");
+
+        navigateTo(requestedTarget || getDefaultSearchUrl());
+
+
+    </script>
+
+</body>
+
+</html>
